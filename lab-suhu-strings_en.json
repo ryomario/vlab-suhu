@@ -1,0 +1,22 @@
+{
+  "lab-suhu.title": {
+    "value": "Lab Suhu"
+  },
+  "screen": {
+    "introName": {
+      "value": "Pendahuluan"
+    },
+    "scaleName": {
+      "value": "Skala"
+    },
+    "conversionName": {
+      "value": "Konversi"
+    }
+  },
+  "unknownLiquid": {
+    "value": "Cairan"
+  },
+  "water": {
+    "value": "Air"
+  }
+}
