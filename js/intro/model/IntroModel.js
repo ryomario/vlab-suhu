@@ -363,6 +363,7 @@ class IntroModel {
     this.timeSpeedProperty.reset();
     this.air.reset();
     this.burner.reset();
+    this.descVisibility.reset();
     // this.burners.forEach( burner => {
     //   burner.reset();
     // } );
