@@ -224,6 +224,7 @@ class IntroScreenView extends ScreenView {
     backLayer.addChild( leftGasPipe );
 
     const thermometerDescImage = new Image( thermometerDescImage_png, {
+      visibleProperty: model.descVisibility,
       centerX: modelViewTransform.modelToViewX( model.descBounds.centerX ),
       centerY: modelViewTransform.modelToViewY( 0 ) / 2,
       maxWidth: modelViewTransform.modelToViewDeltaX( Math.abs( model.descBounds.getWidth() ) ), // absolute for get positive value, so the node won't rotate

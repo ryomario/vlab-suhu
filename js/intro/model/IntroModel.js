@@ -36,6 +36,7 @@ import ModelElement from '../../../../energy-forms-and-changes/js/common/model/M
 import UserMovableModelElement from '../../../../energy-forms-and-changes/js/common/model/UserMovableModelElement.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
 import merge from '../../../../phet-core/js/merge.js';
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
 
 // CONSTANTS
 const NUMBER_OF_THERMOMETERS = 2;
@@ -178,6 +179,11 @@ class IntroModel {
         this.groundSpotXPositions[ 5 ] + leftEdgeToBeakerCenterPad,
         0
     );
+    this.descVisibility = new BooleanProperty( false, {
+      tandem: options.tandem.createTandem( 'descVisibility' ),
+      phetioReadOnly: true,
+      phetioDocumentation: 'the visiblity of description image'
+    } )
 
     // @public {PhetioGroup.<Block>}
     this.blockGroup = new PhetioGroup(
@@ -200,7 +206,8 @@ class IntroModel {
       }
     );
     // create IRON Block
-    this.blockGroup.createNextElement( BlockType.getValue('IRON'), movableElementGroundSpotXPositions[0] );
+    // don't create any block
+    // this.blockGroup.createNextElement( BlockType.getValue('IRON'), movableElementGroundSpotXPositions[0] );
     
     // @public {PhetioGroup.<BeakerContainer>}
     this.beakerGroup = new PhetioGroup(
@@ -230,7 +237,7 @@ class IntroModel {
     );
     // create WATER Beaker
     this.beakerGroup.createNextElement( BeakerType.getValue( 'WATER' ), movableElementGroundSpotXPositions[1] );
-    
+
     // @private {Object} - an object that is used to track which thermal containers are in contact with one another in
     // each model step.
     this.inThermalContactInfo = {};
@@ -396,6 +403,16 @@ class IntroModel {
     // step the thermometers regardless of whether the sim is paused, and fast forward makes no difference
     this.thermometers.forEach( thermometer => {
       thermometer.step();
+
+      // if ( 
+      //   this.beakerGroup.find( beaker => beaker.tandem.phetioID === thermometer.sensedElementNameProperty.get() ) 
+      //   ||
+      //   this.burner.tandem.phetioID === thermometer.sensedElementNameProperty.get()
+      // ) {
+      //   this.descVisibility.set( true );
+      // } else {
+      //   this.descVisibility.set( false );
+      // }
     } );
   }
 
@@ -901,6 +918,9 @@ class IntroModel {
         temperatureAndColorAndNameUpdated = true;
       }
     }
+
+    // set descImage visibility by temperatureAndColorAndNameUpdated on elements above
+    this.descVisibility.set( temperatureAndColorAndNameUpdated );
 
     if ( !temperatureAndColorAndNameUpdated ) {
 
