@@ -52,6 +52,40 @@ const LabSuhuConstants = {
   SCALE_MVT_SCALE_FACTOR: 1700,
   CONVERSION_MVT_SCALE_FACTOR: 1700,
 
+  // themperature
+  CELCIUS: {
+    WATER_FREEZING_POINT_TEMPERATURE: 0,
+    WATER_BOILING_POINT_TEMPERATURE: 100,
+    ROOM_TEMPERATURE: 22.85,
+    convertFromKelvin: ( temperature: number ): number => {
+      return temperature - 273.15;
+    },
+  },
+  FAHRENHEIT: {
+    WATER_FREEZING_POINT_TEMPERATURE: 32,
+    WATER_BOILING_POINT_TEMPERATURE: 212,
+    ROOM_TEMPERATURE: 73.13,
+    convertFromKelvin: ( temperature: number ): number => {
+      return ( temperature - 273.15 ) * 9 / 5 + 32;
+    }
+  },
+  REAMUR: {
+    WATER_FREEZING_POINT_TEMPERATURE: 0,
+    WATER_BOILING_POINT_TEMPERATURE: 80,
+    ROOM_TEMPERATURE: 18.28,
+    convertFromKelvin: ( temperature: number ): number => {
+      return ( temperature - 273.15 ) * 4 / 5;
+    }
+  },
+  KELVIN: {
+    WATER_FREEZING_POINT_TEMPERATURE: 273.15,
+    WATER_BOILING_POINT_TEMPERATURE: 373.15,
+    ROOM_TEMPERATURE: ROOM_TEMPERATURE,
+    convertFromKelvin: ( temperature: number ): number => {
+      return temperature;
+    }
+  },
+
   // constants for the burners.
   INITIAL_FLUID_PROPORTION: 0.5,
   BURNER_EDGE_TO_HEIGHT_RATIO: 0.2, // multiplier empirically determined for best look

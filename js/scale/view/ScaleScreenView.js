@@ -22,7 +22,7 @@ import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransfo
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Utils from '../../../../dot/js/Utils.js';
 import shelf_png from '../../../images/shelf_png.js';
-import { Image, Node, Rectangle } from '../../../../scenery/js/imports.js';
+import { Color, Image, Node, Rectangle, Text } from '../../../../scenery/js/imports.js';
 import LabSuhuColors from '../../common/LabSuhuColors.js';
 import EnergyChunkLayer from '../../../../energy-forms-and-changes/js/common/view/EnergyChunkLayer.js';
 import TimeControlNode from '../../../../scenery-phet/js/TimeControlNode.js';
@@ -51,10 +51,17 @@ import Easing from '../../../../twixt/js/Easing.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import SkyNode from '../../../../energy-forms-and-changes/js/common/view/SkyNode.js';
 import merge from '../../../../phet-core/js/merge.js';
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import ComboBox from '../../../../sun/js/ComboBox.js';
+import Thermometer from '../model/Thermometer.js';
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import ThermometerNode from '../../../../scenery-phet/js/ThermometerNode.js';
+import StringProperty from '../../../../axon/js/StringProperty.js';
 
 // CONSTANTS
 const unknownLiquidString = LabSuhuStrings.unknownLiquid;
 const waterString = LabSuhuStrings.water;
+const celciusLetterString = LabSuhuStrings.celciusLetter;
 
 const EDGE_INSET = 10; // screen edge padding, in screen coordinates
 const THERMOMETER_JUMP_ON_EXTRACTION = new Vector2( 5, 5 ); // in screen coordinates
@@ -349,106 +356,203 @@ class ScaleScreenView extends ScreenView {
     model.beakerGroup.forEach( beakerListener );
     model.beakerGroup.elementCreatedEmitter.addListener( beakerListener );
 
-
     // the thermometer layer needs to be above the movable objects
     const thermometerLayer = new Node();
     this.addChild( thermometerLayer );
+
+    const comboBoxThermometerItems = model.thermometerTypes.map( thermometerType => {
+      return {
+        value: thermometerType,
+        node: new Text( thermometerType.title, {
+          font: new PhetFont( 20 ),
+          maxWidth: 100,
+        } )
+      };
+    } );
+    const comboBoxThermometers = new ComboBox( model.thermometerTypeProperty, comboBoxThermometerItems, thermometerLayer, {
+      cornerRadius: LabSuhuConstants.CONTROL_PANEL_CORNER_RADIUS,
+      top: EDGE_INSET,
+      left: EDGE_INSET,
+      buttonFill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR,
+      buttonStroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE,
+      listFill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR,
+      listStroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE,
+      highlightFill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR.brighterColor( 0.9 ),
+    } );
+
+    thermometerLayer.addChild( comboBoxThermometers );
 
     // create and add the temperature and color thermometer nodes, which look like a thermometer with a triangle on the side
     const nodeString = 'Node';
     let thermometerNodeWidth = 0;
     let thermometerNodeHeight = 0;
-
-    const thermometer = model.thermometer;
-    const thermometerNode = new EFACTemperatureAndColorSensorNode( thermometer, {
-      modelViewTransform: modelViewTransform,
-      dragBounds: modelViewTransform.viewToModelBounds( this.layoutBounds ),
-      draggable: true,
-      tandem: options.tandem.createTandem( thermometer.tandem.name + nodeString )
-    } );
-
-    // thermometers need to be behind blocks and beakers while in storage, but in front when them while in use
-    thermometer.activeProperty.link( active => {
-      if ( active ) {
-        if ( backLayer.hasChild( thermometerNode ) ) {
-          backLayer.removeChild( thermometerNode );
-        }
-        thermometerLayer.addChild( thermometerNode );
-      }
-      else {
-        if ( thermometerLayer.hasChild( thermometerNode ) ) {
-          thermometerLayer.removeChild( thermometerNode );
-        }
-        backLayer.addChild( thermometerNode );
-      }
-    } );
-
-
-    // update the variables that will be used to create the storage area
-    thermometerNodeHeight = thermometerNodeHeight || thermometerNode.height;
-    thermometerNodeWidth = thermometerNodeWidth || thermometerNode.width;
+    const thermometerNodes = {};
+    const thermometersVisibility = {};
+    const thermometerPositionsInStorageArea = {};
 
     // create the storage area for the thermometers
     const thermometerStorageAreaNode = new Rectangle(
       0,
       0,
-      thermometerNodeWidth * 2,
-      thermometerNodeHeight * 1.15,
+      comboBoxThermometers.width,
+      comboBoxThermometers.width * 1.5,
       LabSuhuConstants.CONTROL_PANEL_CORNER_RADIUS,
       LabSuhuConstants.CONTROL_PANEL_CORNER_RADIUS, {
         fill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR,
         stroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE,
         lineWidth: LabSuhuConstants.CONTROL_PANEL_OUTLINE_LINE_WIDTH,
         left: EDGE_INSET,
-        top: EDGE_INSET,
+        top: EDGE_INSET + comboBoxThermometers.height + EDGE_INSET,
         tandem: options.tandem.createTandem( 'thermometerStorageAreaNode' ),
-        phetioDocumentation: 'panel where the thermometers are stored'
+        phetioDocumentation: 'panel where the thermometers are stored',
+        // visibleProperty: thermometerVisibility,
       }
     );
     backLayer.addChild( thermometerStorageAreaNode );
     thermometerStorageAreaNode.moveToBack(); // move behind the thermometerNodes when they are being stored
 
-    // set initial position for thermometers in the storage area, hook up listeners to handle interaction with storage area
-    const interThermometerSpacing = ( thermometerStorageAreaNode.width - thermometerNodeWidth ) / 2;
-    const offsetFromBottomOfStorageArea = 25; // empirically determined
-    const thermometerNodePositionX = thermometerStorageAreaNode.left + interThermometerSpacing;
-    const thermometerPositionInStorageArea = new Vector2(
-      modelViewTransform.viewToModelX( thermometerNodePositionX ),
-      modelViewTransform.viewToModelY( thermometerStorageAreaNode.bottom - offsetFromBottomOfStorageArea )
-    );
 
-    // add a listener for when the thermometer is removed from or returned to the storage area
-    thermometer.userControlledProperty?.link( userControlled => {
-      if ( userControlled ) {
+    const createThermometerNode = ( thermometer, thermometerType ) => {
+      const thermometerVisibility = new BooleanProperty( false, {
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'visiblity' ),
+        phetioReadOnly: true,
+      } );
+      thermometersVisibility[ thermometerType.name ] = thermometerVisibility;
+      const thermometerNode = new EFACTemperatureAndColorSensorNode( thermometer, {
+        modelViewTransform: modelViewTransform,
+        dragBounds: modelViewTransform.viewToModelBounds( this.layoutBounds ),
+        draggable: true,
+        tandem: options.tandem.createTandem( thermometer.tandem.name + nodeString ),
+        visibleProperty: thermometerVisibility,
+      } );
 
-        // the user has picked up this thermometer
-        if ( !thermometer.activeProperty.get() ) {
+      const fixedThermometerVisibility = new BooleanProperty( false, {
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'fixedVisiblity' ),
+        phetioReadOnly: true,
+      } );
 
-          // The thermometer was inactive, which means that it was in the storage area.  In this case, we make it jump
-          // a little to cue the user that this is a movable object.
-          thermometer.positionProperty.set(
-            thermometer.positionProperty.get().plus( modelViewTransform.viewToModelDelta( THERMOMETER_JUMP_ON_EXTRACTION ) )
+      thermometerVisibility.link( visible => {
+        fixedThermometerVisibility.set( visible && thermometer.activeProperty.get() )
+      } );
+      const fixedThermometerNode = new ThermometerNode(
+        thermometer.sensedTemperatureProperty,
+        0,
+        400,
+        {
+          center: thermometerStorageAreaNode.center,
+          bulbDiameter: 30,
+          tubeWidth: 18,
+          lineWidth: 2,
+          tickSpacingTemperature: 25,
+          majorTickLength: 10,
+          minorTickLength: 5,
+          backgroundFill: new Color( 256, 256, 256, 0.67 ),
+          tandem: options.tandem.createTandem( thermometer.tandem.name + 'fixedThermometerNode' ),
+          visibleProperty: fixedThermometerVisibility,
+        }
+      );
+      const currThempString = new StringProperty( '000.00 ' + thermometerType.letter, {
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'currThempString'),
+        phetioReadOnly: true,
+      } );
+      const textCurrThemp = new Text( currThempString, {
+        font: new PhetFont( 20 ),
+        bottom: thermometerStorageAreaNode.height - EDGE_INSET,
+        centerX: thermometerStorageAreaNode.width / 2,
+        maxWidth: thermometerStorageAreaNode.width,
+        visibleProperty: fixedThermometerVisibility,
+      } );
+      thermometer.sensedTemperatureProperty.link( temperature => {
+        currThempString.set( temperature.toFixed( 2 ) + ' ' + thermometerType.letter );
+      } );
+
+      backLayer.addChild( fixedThermometerNode );
+      thermometerStorageAreaNode.addChild( textCurrThemp );
+
+      thermometerNodes[ thermometerType.name ] = thermometerNode;
+
+      // thermometers need to be behind blocks and beakers while in storage, but in front when them while in use
+      thermometer.activeProperty.link( active => {
+        fixedThermometerVisibility.set( active && thermometerVisibility.get() )
+
+        if ( active ) {
+          if ( backLayer.hasChild( thermometerNode ) ) {
+            backLayer.removeChild( thermometerNode );
+          }
+          thermometerLayer.addChild( thermometerNode );
+        }
+        else {
+          if ( thermometerLayer.hasChild( thermometerNode ) ) {
+            thermometerLayer.removeChild( thermometerNode );
+          }
+          backLayer.addChild( thermometerNode );
+        }
+      } );
+
+      // update the variables that will be used to create the storage area
+      thermometerNodeHeight = thermometerNodeHeight || thermometerNode.height;
+      thermometerNodeWidth = thermometerNodeWidth || thermometerNode.width;
+  
+      // celsius text
+      const text = new Text( thermometerType.letter, {
+        font: new PhetFont( 20 ),
+        top: EDGE_INSET,
+        left: EDGE_INSET,
+        visibleProperty: thermometerVisibility,
+      } );
+      thermometerStorageAreaNode.addChild( text );
+      // set initial position for thermometers in the storage area, hook up listeners to handle interaction with storage area
+      const interThermometerSpacing = ( thermometerStorageAreaNode.width - thermometerNodeWidth ) / 2;
+      const offsetFromBottomOfStorageArea = 25; // empirically determined
+      const thermometerNodeBottomPosition = offsetFromBottomOfStorageArea + ( thermometerStorageAreaNode.height - thermometerNodeHeight ) / 2;
+      const thermometerNodePositionX = thermometerStorageAreaNode.left + interThermometerSpacing;
+      const thermometerPositionInStorageArea = new Vector2(
+        modelViewTransform.viewToModelX( thermometerNodePositionX ),
+        modelViewTransform.viewToModelY( thermometerStorageAreaNode.bottom - thermometerNodeBottomPosition )
+      );
+      thermometerPositionsInStorageArea[ thermometerType.name ] = thermometerPositionInStorageArea;
+  
+      // add a listener for when the thermometer is removed from or returned to the storage area
+      thermometer.userControlledProperty?.link( userControlled => {
+        if ( userControlled ) {
+  
+          // the user has picked up this thermometer
+          if ( !thermometer.activeProperty.get() ) {
+  
+            // The thermometer was inactive, which means that it was in the storage area.  In this case, we make it jump
+            // a little to cue the user that this is a movable object.
+            thermometer.positionProperty.set(
+              thermometer.positionProperty.get().plus( modelViewTransform.viewToModelDelta( THERMOMETER_JUMP_ON_EXTRACTION ) )
+            );
+  
+            // activate the thermometer
+            thermometer.activeProperty.set( true );
+          }
+        }
+        else {
+  
+          // the user has released this thermometer - test if it should go back in the storage area
+          const colorIndicatorBounds = thermometerNode.localToParentBounds(
+            thermometerNode.temperatureAndColorSensorNode.colorIndicatorBounds
           );
-
-          // activate the thermometer
-          thermometer.activeProperty.set( true );
+          const thermometerBounds = thermometerNode.localToParentBounds(
+            thermometerNode.temperatureAndColorSensorNode.thermometerBounds
+          );
+          if ( colorIndicatorBounds.intersectsBounds( thermometerStorageAreaNode.bounds ) ||
+               thermometerBounds.intersectsBounds( thermometerStorageAreaNode.bounds ) ) {
+            returnThermometerToStorageArea( thermometer, true, thermometerNode, thermometerPositionInStorageArea );
+          }
         }
-      }
-      else {
+      } );
+    };
 
-        // the user has released this thermometer - test if it should go back in the storage area
-        const colorIndicatorBounds = thermometerNode.localToParentBounds(
-          thermometerNode.temperatureAndColorSensorNode.colorIndicatorBounds
-        );
-        const thermometerBounds = thermometerNode.localToParentBounds(
-          thermometerNode.temperatureAndColorSensorNode.thermometerBounds
-        );
-        if ( colorIndicatorBounds.intersectsBounds( thermometerStorageAreaNode.bounds ) ||
-             thermometerBounds.intersectsBounds( thermometerStorageAreaNode.bounds ) ) {
-          returnThermometerToStorageArea( thermometer, true, thermometerNode );
-        }
-      }
-    } );
+    
+    createThermometerNode( model.thermometers[ Thermometer.CELCIUS.name ], Thermometer.CELCIUS );
+    createThermometerNode( model.thermometers[ Thermometer.FAHRENHEIT.name ], Thermometer.FAHRENHEIT );
+    createThermometerNode( model.thermometers[ Thermometer.REAMUR.name ], Thermometer.REAMUR );
+    createThermometerNode( model.thermometers[ Thermometer.KELVIN.name ], Thermometer.KELVIN );
+
+
 
     /**
      * return a thermometer to its initial position in the storage area
@@ -456,7 +560,7 @@ class ScaleScreenView extends ScreenView {
      * @param {Boolean} doAnimation - whether the thermometer animates back to the storage area
      * @param {EFACTemperatureAndColorSensorNode} [thermometerNode]
      */
-     const returnThermometerToStorageArea = ( thermometer, doAnimation, thermometerNode ) => {
+    const returnThermometerToStorageArea = ( thermometer, doAnimation, thermometerNode, thermometerPositionInStorageArea ) => {
       const currentPosition = thermometer.positionProperty.get();
       if ( !currentPosition.equals( thermometerPositionInStorageArea ) && doAnimation ) {
 
@@ -491,8 +595,19 @@ class ScaleScreenView extends ScreenView {
 
     // returns all thermometers to the storage area
     const returnAllThermometersToStorageArea = () => {
-        return returnThermometerToStorageArea(model.thermometer, false);
+      Object.keys( model.thermometers ).map( key => {
+        const thermometer = model.thermometers[ key ];
+        return returnThermometerToStorageArea(thermometer, false, thermometerNodes[ key ], thermometerPositionsInStorageArea[ key ] );
+      } );
     };
+
+    model.thermometerTypeProperty.link( thermometerType => {
+      Object.keys( thermometerNodes ).map( key => {
+        thermometersVisibility[ key ].set( key === thermometerType.name );
+        returnThermometerToStorageArea(model.thermometers[ thermometerType.name ], false, thermometerNodes[ key ], thermometerPositionsInStorageArea[ key ] );
+      } );
+      model.descVisibility.reset();
+    } );
 
     // put all of the temperature and color thermometers into the storage area as part of initialization process
     returnAllThermometersToStorageArea();

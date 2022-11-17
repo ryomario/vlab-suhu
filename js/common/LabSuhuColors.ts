@@ -29,8 +29,9 @@ const LabSuhuColors = {
   CLOCK_CONTROL_BACKGROUND_COLOR: new Color( 216, 188, 136 ),
   FLAME_ORANGE: new Color( 'orange' ),
   ICE_BLUE: new Color( '#87CEFA' ),
-  CONTROL_PANEL_BACKGROUND_COLOR: new Color( 170, 200, 255 ),
+  CONTROL_PANEL_BACKGROUND_COLOR: new Color( 190, 220, 255 ),
   CONTROL_PANEL_OUTLINE_STROKE: new Color( 120, 120, 120 ),
+  TEMPERATURE_SENSOR_INACTIVE_COLOR: new Color( 'white' ),
 };
 
 labSuhu.register( 'LabSuhuColors', LabSuhuColors );

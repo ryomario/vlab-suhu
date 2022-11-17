@@ -18,5 +18,37 @@
   },
   "water": {
     "value": "Air"
+  },
+  "celcius": {
+    "letter": {
+      "value": "°C"
+    },
+    "name": {
+      "value": "Celcius"
+    }
+  },
+  "fahrenheit": {
+    "letter": {
+      "value": "°F"
+    },
+    "name": {
+      "value": "Fahrenheit"
+    }
+  },
+  "reamur": {
+    "letter": {
+      "value": "°R"
+    },
+    "name": {
+      "value": "Reamur"
+    }
+  },
+  "kelvin": {
+    "letter": {
+      "value": "K"
+    },
+    "name": {
+      "value": "Kelvin"
+    }
   }
 }

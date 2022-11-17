@@ -25,6 +25,30 @@ type StringsType = {
   'unknownLiquidStringProperty': LinkableProperty<string>;
   'water': string;
   'waterStringProperty': LinkableProperty<string>;
+  'celcius': {
+    'letter': string;
+    'letterStringProperty': LinkableProperty<string>;
+    'name': string;
+    'nameStringProperty': LinkableProperty<string>;
+  };
+  'fahrenheit': {
+    'letter': string;
+    'letterStringProperty': LinkableProperty<string>;
+    'name': string;
+    'nameStringProperty': LinkableProperty<string>;
+  };
+  'reamur': {
+    'letter': string;
+    'letterStringProperty': LinkableProperty<string>;
+    'name': string;
+    'nameStringProperty': LinkableProperty<string>;
+  };
+  'kelvin': {
+    'letter': string;
+    'letterStringProperty': LinkableProperty<string>;
+    'name': string;
+    'nameStringProperty': LinkableProperty<string>;
+  };
 };
 
 const LabSuhuStrings = getStringModule( 'LAB_SUHU' ) as StringsType;

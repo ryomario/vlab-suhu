@@ -27,7 +27,7 @@ import LabSuhuColors from '../../common/LabSuhuColors.js';
 import LabSuhuConstants from '../../common/LabSuhuConstants.js';
 import { Color } from '../../../../scenery/js/imports.js';
 import RectangularThermalMovableModelElement from '../../../../energy-forms-and-changes/js/common/model/RectangularThermalMovableModelElement.js';
-import StickyTemperatureAndColorSensor from '../../../../energy-forms-and-changes/js/intro/model/StickyTemperatureAndColorSensor.js';
+import StickyTemperatureAndColorSensor from '../../common/model/StickyTemperatureAndColorSensor.js';
 import Range from '../../../../dot/js/Range.js';
 import EnergyBalanceTracker from '../../../../energy-forms-and-changes/js/intro/model/EnergyBalanceTracker.js';
 import EnergyBalanceRecord from '../../../../energy-forms-and-changes/js/intro/model/EnergyBalanceRecord.js';
@@ -36,6 +36,8 @@ import ModelElement from '../../../../energy-forms-and-changes/js/common/model/M
 import UserMovableModelElement from '../../../../energy-forms-and-changes/js/common/model/UserMovableModelElement.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
 import merge from '../../../../phet-core/js/merge.js';
+import Property from '../../../../axon/js/Property.js';
+import Thermometer from './Thermometer.js';
 
 // CONSTANTS
 const NUMBER_OF_THERMOMETERS = 1;
@@ -101,6 +103,11 @@ class ScaleModel {
     this.air = new Air( this.energyChunksVisibleProperty, this.energyChunkGroup, this.energyChunkWanderControllerGroup, {
       tandem: tandem.createTandem( 'air' )
     } );
+
+    // @public {Property.<Thermometer>} - Thermometer type
+    this.thermometerTypeProperty = new Property( Thermometer.CELCIUS );
+
+    this.thermometerTypes = Thermometer.TYPES;
 
     // @private {number} - calculate space in between the center points of the snap-to spots on the ground
     this.spaceBetweenGroundSpotCenters = ( RIGHT_EDGE - LEFT_EDGE - ( EDGE_PAD * 2 ) - BEAKER_WIDTH ) /
@@ -219,15 +226,62 @@ class ScaleModel {
     // @private {ModelElement} - put all of the model elements on a list for easy iteration
     this.modelElementList = [ this.burner, ...this.thermalContainers ];
 
+    this.thermometers = {};
+
     // @public (read-only) {StickyTemperatureAndColorSensor}
-    this.thermometer = new StickyTemperatureAndColorSensor(
+    this.thermometers[ Thermometer.CELCIUS.name ] = new StickyTemperatureAndColorSensor(
       this,
       INITIAL_THERMOMETER_POSITION,
       false,
       {
-        tandem: tandem.createTandem( 'thermometer' )
+        tandem: tandem.createTandem( 'thermometer-celcius' ),
+        lowerFixedPoint: Thermometer.CELCIUS.lowerPoint,
+        upperFixedPoint: Thermometer.CELCIUS.upperPoint,
+        units: Thermometer.CELCIUS.units,
       }
     );
+    // @public (read-only) {StickyTemperatureAndColorSensor}
+    this.thermometers[ Thermometer.KELVIN.name ] = new StickyTemperatureAndColorSensor(
+      this,
+      INITIAL_THERMOMETER_POSITION,
+      false,
+      {
+        tandem: tandem.createTandem( 'thermometer-kelvin' ),
+        lowerFixedPoint: Thermometer.KELVIN.lowerPoint,
+        upperFixedPoint: Thermometer.KELVIN.upperPoint,
+        units: Thermometer.KELVIN.units,
+      }
+    );
+    // @public (read-only) {StickyTemperatureAndColorSensor}
+    this.thermometers[ Thermometer.REAMUR.name ] = new StickyTemperatureAndColorSensor(
+      this,
+      INITIAL_THERMOMETER_POSITION,
+      false,
+      {
+        tandem: tandem.createTandem( 'thermometer-reamur' ),
+        lowerFixedPoint: Thermometer.REAMUR.lowerPoint,
+        upperFixedPoint: Thermometer.REAMUR.upperPoint,
+        units: Thermometer.REAMUR.units,
+      }
+    );
+    // @public (read-only) {StickyTemperatureAndColorSensor}
+    this.thermometers[ Thermometer.FAHRENHEIT.name ] = new StickyTemperatureAndColorSensor(
+      this,
+      INITIAL_THERMOMETER_POSITION,
+      false,
+      {
+        tandem: tandem.createTandem( 'thermometer-fahrenheit' ),
+        lowerFixedPoint: Thermometer.FAHRENHEIT.lowerPoint,
+        upperFixedPoint: Thermometer.FAHRENHEIT.upperPoint,
+        units: Thermometer.FAHRENHEIT.units,
+      }
+    );
+
+    Object.values( this.thermometers ).map( thermometer => {
+      thermometer.activeProperty.link( isActive => {
+        this.descVisibility.set( isActive );
+      } );
+    } );
 
 
     // @private {EnergyBalanceTracker} - This is used to track energy exchanges between all of the various energy
@@ -298,7 +352,8 @@ class ScaleModel {
     this.beakerGroup.forEach( beaker => {
       beaker.reset();
     } );
-    this.thermometer.reset();
+    Object.values( this.thermometers ).forEach( thermometer => thermometer.reset() );
+    this.thermometerTypeProperty.reset();
     this.energyBalanceTracker.clearAllBalances();
   }
 
@@ -325,7 +380,7 @@ class ScaleModel {
     }
 
     // step the thermometers regardless of whether the sim is paused, and fast forward makes no difference
-    this.thermometer.step();
+    Object.values( this.thermometers ).forEach( thermometer => thermometer.step() );
   }
 
   /**
@@ -771,13 +826,15 @@ class ScaleModel {
    * @param {Property.<number>} sensedTemperatureProperty
    * @param {Property.<Color>} sensedElementColorProperty
    * @param {StringProperty} sensedElementNameProperty
+   * @param {function} setSensedTemperaturePropertyFromKelvin Functoin to convert the temperature
    * @public
    */
   updateTemperatureAndColorAndNameAtPosition(
     position,
     sensedTemperatureProperty,
     sensedElementColorProperty,
-    sensedElementNameProperty
+    sensedElementNameProperty,
+    setSensedTemperaturePropertyFromKelvin
   ) {
 
     let temperatureAndColorAndNameUpdated = false;
@@ -788,7 +845,7 @@ class ScaleModel {
     for ( let i = blocks.length - 1; i >= 0 && !temperatureAndColorAndNameUpdated; i-- ) {
       const block = blocks[ i ];
       if ( block.getProjectedShape().containsPoint( position ) ) {
-        sensedTemperatureProperty.set( block.temperature );
+        setSensedTemperaturePropertyFromKelvin( block.temperature );
         sensedElementColorProperty.set( block.color );
         sensedElementNameProperty.set( block.tandem.phetioID );
         temperatureAndColorAndNameUpdated = true;
@@ -799,7 +856,7 @@ class ScaleModel {
     for ( let i = 0; i < this.beakerGroup.count && !temperatureAndColorAndNameUpdated; i++ ) {
       const beaker = this.beakerGroup.getElement( i );
       if ( beaker.thermalContactArea.containsPoint( position ) ) {
-        sensedTemperatureProperty.set( beaker.temperatureProperty.get() );
+        setSensedTemperaturePropertyFromKelvin( beaker.temperatureProperty.get() );
         sensedElementColorProperty.set( beaker.fluidColor );
         sensedElementNameProperty.set( beaker.tandem.phetioID );
         temperatureAndColorAndNameUpdated = true;
@@ -812,7 +869,7 @@ class ScaleModel {
     for ( let i = 0; i < this.beakerGroup.count && !temperatureAndColorAndNameUpdated; i++ ) {
       const beaker = this.beakerGroup.getElement( i );
       if ( beaker.getSteamArea().containsPoint( position ) && beaker.steamingProportion > 0 ) {
-        sensedTemperatureProperty.set( beaker.getSteamTemperature( position.y - beaker.getSteamArea().minY ) );
+        setSensedTemperaturePropertyFromKelvin( beaker.getSteamTemperature( position.y - beaker.getSteamArea().minY ) );
         sensedElementColorProperty.set( beaker.steamColor );
         sensedElementNameProperty.set( beaker.tandem.phetioID );
         temperatureAndColorAndNameUpdated = true;
@@ -824,7 +881,7 @@ class ScaleModel {
     if ( !temperatureAndColorAndNameUpdated ) {
       const burner = this.burner;
       if ( burner.getFlameIceRect().containsPoint( position ) ) {
-        sensedTemperatureProperty.set( burner.getTemperature() );
+        setSensedTemperaturePropertyFromKelvin( burner.getTemperature() );
         sensedElementColorProperty.set( ScaleModel.mapHeatCoolLevelToColor( burner.heatCoolLevelProperty.get() ) );
         sensedElementNameProperty.set( burner.tandem.phetioID );
         temperatureAndColorAndNameUpdated = true;
@@ -832,12 +889,12 @@ class ScaleModel {
     }
 
     // set descImage visibility by temperatureAndColorAndNameUpdated on elements above
-    this.descVisibility.set( temperatureAndColorAndNameUpdated );
+    // this.descVisibility.set( temperatureAndColorAndNameUpdated );
 
     if ( !temperatureAndColorAndNameUpdated ) {
 
       // the position is in nothing else, so set the air temperature and color
-      sensedTemperatureProperty.set( this.air.getTemperature() );
+      setSensedTemperaturePropertyFromKelvin( this.air.getTemperature() );
       sensedElementColorProperty.set( LabSuhuColors.BACKGROUND_COLOR );
       sensedElementNameProperty.reset();
     }
