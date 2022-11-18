@@ -451,11 +451,7 @@ class ScaleScreenView extends ScreenView {
           visibleProperty: fixedThermometerVisibility,
         }
       );
-      const currThempString = new StringProperty( '000.00 ' + thermometerType.letter, {
-        tandem: options.tandem.createTandem( thermometer.tandem.name + 'currThempString'),
-        phetioReadOnly: true,
-      } );
-      const textCurrThemp = new Text( currThempString, {
+      const textCurrThemp = new Text( '', {
         font: new PhetFont( 20 ),
         bottom: thermometerStorageAreaNode.height - EDGE_INSET,
         centerX: thermometerStorageAreaNode.width / 2,
@@ -463,7 +459,8 @@ class ScaleScreenView extends ScreenView {
         visibleProperty: fixedThermometerVisibility,
       } );
       thermometer.sensedTemperatureProperty.link( temperature => {
-        currThempString.set( temperature.toFixed( 2 ) + ' ' + thermometerType.letter );
+        textCurrThemp.text = temperature.toFixed( 2 ) + ' ' + thermometerType.letter;
+        textCurrThemp.centerX = thermometerStorageAreaNode.width / 2;
       } );
 
       backLayer.addChild( fixedThermometerNode );
