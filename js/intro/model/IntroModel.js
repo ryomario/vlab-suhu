@@ -261,6 +261,15 @@ class IntroModel {
       );
       this.thermometers.push( thermometer );
 
+      // Show / hide descImage by thermometer activation
+      thermometer.activeProperty.link( active => {
+        // check if other thermometer is active
+        const isOtherActive = this.thermometers.some( thermo => thermo.activeProperty.get() );
+        // show descImage if one or more thermometer active
+        // hide descImage if no one thermometer activated
+        this.descVisibility.set( active || isOtherActive );
+      } );
+
       // Add handling for a special case where the user drops a block in the beaker behind this thermometer. The
       // action is to automatically move the thermometer to a position where it continues to sense the beaker
       // temperature. Not needed if zero blocks are in use. This was requested after interviews.
@@ -921,7 +930,7 @@ class IntroModel {
     }
 
     // set descImage visibility by temperatureAndColorAndNameUpdated on elements above
-    this.descVisibility.set( temperatureAndColorAndNameUpdated );
+    // this.descVisibility.set( temperatureAndColorAndNameUpdated );
 
     if ( !temperatureAndColorAndNameUpdated ) {
 
