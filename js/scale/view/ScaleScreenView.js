@@ -395,7 +395,7 @@ class ScaleScreenView extends ScreenView {
       0,
       0,
       comboBoxThermometers.width,
-      comboBoxThermometers.width * 1.5,
+      comboBoxThermometers.width * 1.35,
       LabSuhuConstants.CONTROL_PANEL_CORNER_RADIUS,
       LabSuhuConstants.CONTROL_PANEL_CORNER_RADIUS, {
         fill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR,
