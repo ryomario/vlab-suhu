@@ -278,8 +278,9 @@ class ScaleModel {
     );
 
     Object.values( this.thermometers ).map( thermometer => {
-      thermometer.activeProperty.link( isActive => {
-        this.descVisibility.set( isActive );
+      // use lazyLink for ignores the initiation
+      thermometer.activeProperty.lazyLink( isActive => {
+        this.descVisibility.set( isActive || true ); // just for first toggle
       } );
     } );
 

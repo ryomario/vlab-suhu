@@ -603,7 +603,7 @@ class ScaleScreenView extends ScreenView {
         thermometersVisibility[ key ].set( key === thermometerType.name );
         returnThermometerToStorageArea(model.thermometers[ thermometerType.name ], false, thermometerNodes[ key ], thermometerPositionsInStorageArea[ key ] );
       } );
-      model.descVisibility.reset();
+      // model.descVisibility.reset();
     } );
 
     // put all of the temperature and color thermometers into the storage area as part of initialization process
