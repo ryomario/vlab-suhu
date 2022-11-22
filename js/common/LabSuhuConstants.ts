@@ -91,6 +91,9 @@ const LabSuhuConstants = {
   BURNER_EDGE_TO_HEIGHT_RATIO: 0.2, // multiplier empirically determined for best look
   BURNER_PERSPECTIVE_ANGLE: Math.PI / 4, // positive is counterclockwise, a value of 0 produces a non-skewed rectangle
 
+  // constants for the beaker
+  Z_TO_Y_OFFSET_MULTIPLIER: -0.25,
+
   // time values for normal and fast-forward motion
   FRAMES_PER_SECOND: FRAMES_PER_SECOND,
   SIM_TIME_PER_TICK_NORMAL: SIM_TIME_PER_TICK_NORMAL,

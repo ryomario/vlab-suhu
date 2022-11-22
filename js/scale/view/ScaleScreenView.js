@@ -41,7 +41,7 @@ import efacPositionConstrainer from '../../../../energy-forms-and-changes/js/int
 import PhetioGroup from '../../../../tandem/js/PhetioGroup.js';
 import BlockNode from '../../../../energy-forms-and-changes/js/intro/view/BlockNode.js';
 import BeakerType from '../../../../energy-forms-and-changes/js/common/model/BeakerType.js';
-import BeakerContainerView from '../../../../energy-forms-and-changes/js/intro/view/BeakerContainerView.js';
+import SuhuBeakerContainerView from '../../common/view/SuhuBeakerContainerView.js';
 import LabSuhuStrings from '../../LabSuhuStrings.js';
 import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
@@ -319,7 +319,7 @@ class ScaleScreenView extends ScreenView {
     // @private {PhetioGroup.<BeakerContainerView>}
     this.beakerProxyNodeGroup = new PhetioGroup( ( tandem, beaker ) => {
       const label = beaker.beakerType === BeakerType.getValue( 'WATER' ) ? waterString : unknownLiquidString;
-      return new BeakerContainerView(
+      return new SuhuBeakerContainerView(
         beaker,
         model,
         modelViewTransform,

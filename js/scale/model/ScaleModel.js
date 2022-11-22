@@ -16,7 +16,7 @@ import Air from '../../../../energy-forms-and-changes/js/intro/model/Air.js';
 import Utils from '../../../../dot/js/Utils.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Burner from '../../../../energy-forms-and-changes/js/common/model/Burner.js';
-import BeakerContainer from '../../../../energy-forms-and-changes/js/intro/model/BeakerContainer.js';
+import SuhuBeakerContainer from '../../common/model/SuhuBeakerContainer.js';
 import BeakerType from '../../../../energy-forms-and-changes/js/common/model/BeakerType.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import PhetioGroup from '../../../../tandem/js/PhetioGroup.js';
@@ -190,7 +190,7 @@ class ScaleModel {
     // @public {PhetioGroup.<BeakerContainer>}
     this.beakerGroup = new PhetioGroup(
       ( tandem, beakerType, initialXPosition ) => {
-        return new BeakerContainer(
+        return new SuhuBeakerContainer(
           new Vector2( initialXPosition, 0 ),
           BEAKER_WIDTH,
           BEAKER_HEIGHT,
