@@ -38,6 +38,9 @@ import StringProperty from '../../../../axon/js/StringProperty.js';
 import merge from '../../../../phet-core/js/merge.js';
 import Property from '../../../../axon/js/Property.js';
 import Thermometer from './Thermometer.js';
+import LabSuhuClock from '../../common/model/LabSuhuClock.js';
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 
 // CONSTANTS
 const NUMBER_OF_THERMOMETERS = 1;
@@ -85,6 +88,10 @@ class ScaleModel {
       phetioDocumentation: 'whether the screen is playing or paused'
     } );
 
+    this.steppingProperty = new BooleanProperty( false );
+
+    this.rewindingProperty = new BooleanProperty( false );
+
     // @private
     this.energyChunkGroup = new EnergyChunkGroup( this.energyChunksVisibleProperty, {
       tandem: tandem.createTandem( 'energyChunkGroup' )
@@ -97,6 +104,32 @@ class ScaleModel {
 
     // @public for debugging, controls play speed of the simulation
     this.timeSpeedProperty = new EnumerationProperty( TimeSpeed.NORMAL );
+
+    this.changeRewindValueProperty = new DerivedProperty( [
+      this.isPlayingProperty,
+      this.steppingProperty,
+      this.rewindingProperty
+    ], ( playButtonPressed, stepping, rewinding ) =>
+      !playButtonPressed && !stepping && !rewinding
+    );
+  
+    this.clock = new LabSuhuClock(
+      this.changeRewindValueProperty,
+      LabSuhuClock.DEFAULT_DT,
+      this.steppingProperty,
+      this.timeSpeedProperty,
+      tandem,
+      tandem.createTandem( 'clock' )
+    );
+
+    this.clock.addEventTimer( dt => {
+      const elapsedTime = this.stepClock( dt );
+      this.clock.setSimulationTime( this.clock.getSimulationTime() + elapsedTime );
+    } );
+
+    this.isPlayingProperty.link( isPlaying => {
+      this.clock.setRunning( isPlaying );
+    } );
 
     // @public (read-only) {Air} - model of the air that surrounds the other model elements, and can absorb or provide
     // energy
@@ -359,37 +392,59 @@ class ScaleModel {
   }
 
   /**
+   * @private
+   * @param {number} dt date time in seconds
+   * @returns {number} elapsed time
+   */
+  stepClock( dt ) {
+    // standardized time step - based on the slowest time step for the given orbital mode
+    let smallestTimeStep;
+    // get the number of times we will need to step the model based on the dt passed in
+    let numberOfSteps;
+    switch ( this.clock.timeSpeedProperty.value ) {
+      case TimeSpeed.SLOW:
+        smallestTimeStep = Math.min( this.clock.baseDTValue, dt );
+        numberOfSteps = 0.01;
+        break;
+      case TimeSpeed.NORMAL:
+        smallestTimeStep = dt;
+        numberOfSteps = 1;
+        break;
+      default: // TimeSpeed.FAST
+        smallestTimeStep = Math.max( this.clock.baseDTValue, dt );
+        numberOfSteps = 4;
+    }
+
+    this.stepModel( smallestTimeStep * numberOfSteps );
+
+    return smallestTimeStep * numberOfSteps;
+  }
+
+  /**
    * step the sim forward by one fixed nominal frame time
    * @public
    */
   manualStep() {
-    this.stepModel( LabSuhuConstants.SIM_TIME_PER_TICK_NORMAL );
-    this.manualStepEmitter.emit( LabSuhuConstants.SIM_TIME_PER_TICK_NORMAL ); // notify the view
+    this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    this.manualStepEmitter.emit( LabSuhuClock.SECONDS_PER_TICK ); // notify the view
   }
 
   /**
    * step function for this model, automatically called by joist
-   * @param {number} dt - delta time, in seconds
+   * @param {number} dt - delta time  (real time), in seconds
    * @public
    */
   step( dt ) {
+    // limit dt to 1 so there are no large jumps
+    // dt = Math.min( 1, dt );
 
     // only step the model if not paused
     if ( this.isPlayingProperty.get() ) {
-      const multiplier = this.timeSpeedProperty.get() === TimeSpeed.NORMAL ? 1 : FAST_FORWARD_MULTIPLIER;
-      this.stepModel( dt * multiplier );
+      this.clock.step( dt );
+
+      // const multiplier = this.timeSpeedProperty.get() === TimeSpeed.NORMAL ? 1 : FAST_FORWARD_MULTIPLIER;
+      // this.stepModel( dt * multiplier );
     }
-
-    // step the thermometers regardless of whether the sim is paused, and fast forward makes no difference
-    Object.values( this.thermometers ).forEach( thermometer => thermometer.step() );
-  }
-
-  /**
-   * update the state of the model for a given time amount
-   * @param {number} dt - time step, in seconds
-   * @private
-   */
-  stepModel( dt ) {
 
     // Cause any user-movable model elements that are not supported by a surface to fall or, in some cases, jump up
     // towards the nearest supporting surface.
@@ -403,10 +458,22 @@ class ScaleModel {
       }
     } );
 
+    // step the thermometers regardless of whether the sim is paused, and fast forward makes no difference
+    Object.values( this.thermometers ).forEach( thermometer => thermometer.step() );
+  }
+
+  /**
+   * update the state of the model for a given time amount
+   * @param {number} dt - time step, in seconds
+   * @private
+   */
+  stepModel( dt ) {
+
     // update the fluid level in the beaker, which could be displaced by one or more of the blocks
-    this.beakerGroup.forEach( beaker => {
-      beaker.updateFluidDisplacement( this.blockGroup.map( block => block.getBounds() ) );
-    } );
+    // disable this, because there are no any blocks showed
+    // this.beakerGroup.forEach( beaker => {
+    //   beaker.updateFluidDisplacement( this.blockGroup.map( block => block.getBounds() ) );
+    // } );
 
     //=====================================================================
     // Energy and Energy Chunk Exchange
@@ -419,7 +486,7 @@ class ScaleModel {
     // --------- transfer continuous energy (and not energy chunks yet) between elements --------------
 
     // clear the flags that are used to track whether energy transfers occurred during this step
-    this.energyBalanceTracker.clearRecentlyUpdatedFlags();
+    // this.energyBalanceTracker.clearRecentlyUpdatedFlags();
 
     // loop through all the movable thermal energy containers and have them exchange energy with one another
     this.thermalContainers.forEach( ( container1, index ) => {
@@ -427,7 +494,7 @@ class ScaleModel {
 
         // transfer energy if there is a thermal differential, keeping track of what was exchanged
         const energyTransferredFrom1to2 = container1.exchangeEnergyWith( container2, dt );
-        this.energyBalanceTracker.logEnergyExchange( container1.id, container2.id, energyTransferredFrom1to2 );
+        // this.energyBalanceTracker.logEnergyExchange( container1.id, container2.id, energyTransferredFrom1to2 );
       } );
     } );
 
@@ -437,14 +504,14 @@ class ScaleModel {
     if ( this.burner.areAnyOnTop( this.thermalContainers ) ) {
       this.thermalContainers.forEach( energyContainer => {
         energyTransferredFromBurner = this.burner.addOrRemoveEnergyToFromObject( energyContainer, dt );
-        this.energyBalanceTracker.logEnergyExchange( this.burner.id, energyContainer.id, energyTransferredFromBurner );
+        // this.energyBalanceTracker.logEnergyExchange( this.burner.id, energyContainer.id, energyTransferredFromBurner );
       } );
     }
     else {
 
       // nothing on a burner, so heat/cool the air
       energyTransferredFromBurner = this.burner.addOrRemoveEnergyToFromAir( this.air, dt );
-      this.energyBalanceTracker.logEnergyExchange( this.burner.id, this.air.id, energyTransferredFromBurner );
+      // this.energyBalanceTracker.logEnergyExchange( this.burner.id, this.air.id, energyTransferredFromBurner );
     }
     // } );
 
@@ -469,7 +536,7 @@ class ScaleModel {
       // exchange energy with the air if not immersed in the beaker
       if ( !immersedInBeaker ) {
         const energyExchangedWithAir = this.air.exchangeEnergyWith( container1, dt );
-        this.energyBalanceTracker.logEnergyExchange( this.air.id, container1.id, energyExchangedWithAir );
+        // this.energyBalanceTracker.logEnergyExchange( this.air.id, container1.id, energyExchangedWithAir );
       }
     } );
 
@@ -479,121 +546,121 @@ class ScaleModel {
     // to an energy chunk, and that also were recently updated.  The reason that it is important whether or not the
     // balance was recently updated is that it indicates that the entities are in thermal contact, and thus can
     // exchange energy chunks.
-    this.reusableBalanceArray.length = 0; // clear the list
-    this.energyBalanceTracker.getBalancesOverThreshold(
-      LabSuhuConstants.ENERGY_PER_CHUNK,
-      true,
-      this.reusableBalanceArray
-    );
+    // this.reusableBalanceArray.length = 0; // clear the list
+    // this.energyBalanceTracker.getBalancesOverThreshold(
+    //   LabSuhuConstants.ENERGY_PER_CHUNK,
+    //   true,
+    //   this.reusableBalanceArray
+    // );
 
-    this.reusableBalanceArray.forEach( energyBalanceRecord => {
+    // this.reusableBalanceArray.forEach( energyBalanceRecord => {
 
-      const fromID = energyBalanceRecord.fromID;
-      const toID = energyBalanceRecord.toID;
+    //   const fromID = energyBalanceRecord.fromID;
+    //   const toID = energyBalanceRecord.toID;
 
-      // figure out who will supply the energy chunk and who will consume it
-      let energyChunkSupplier;
-      let energyChunkConsumer;
-      if ( energyBalanceRecord.energyBalance > 0 ) {
-        energyChunkSupplier = this.getThermalElementByID( fromID );
-        energyChunkConsumer = this.getThermalElementByID( toID );
-      }
-      else {
-        energyChunkSupplier = this.getThermalElementByID( toID );
-        energyChunkConsumer = this.getThermalElementByID( fromID );
-      }
+    //   // figure out who will supply the energy chunk and who will consume it
+    //   let energyChunkSupplier;
+    //   let energyChunkConsumer;
+    //   if ( energyBalanceRecord.energyBalance > 0 ) {
+    //     energyChunkSupplier = this.getThermalElementByID( fromID );
+    //     energyChunkConsumer = this.getThermalElementByID( toID );
+    //   }
+    //   else {
+    //     energyChunkSupplier = this.getThermalElementByID( toID );
+    //     energyChunkConsumer = this.getThermalElementByID( fromID );
+    //   }
 
-      // if the transfer is supposed to go to or from a burner, make sure the burner is in the correct state
-      if ( energyChunkSupplier.id.indexOf( 'burner' ) >= 0 && energyChunkSupplier.heatCoolLevelProperty.value < 0 ||
-           energyChunkConsumer.id.indexOf( 'burner' ) >= 0 && energyChunkConsumer.heatCoolLevelProperty.value > 0 ) {
+    //   // if the transfer is supposed to go to or from a burner, make sure the burner is in the correct state
+    //   if ( energyChunkSupplier.id.indexOf( 'burner' ) >= 0 && energyChunkSupplier.heatCoolLevelProperty.value < 0 ||
+    //        energyChunkConsumer.id.indexOf( 'burner' ) >= 0 && energyChunkConsumer.heatCoolLevelProperty.value > 0 ) {
 
-        // burner isn't in correct state, bail on this transfer
-        return;
-      }
+    //     // burner isn't in correct state, bail on this transfer
+    //     return;
+    //   }
 
-      // transfer the energy chunk from the supplier to the consumer
-      this.transferEnergyChunk( energyChunkSupplier, energyChunkConsumer, energyBalanceRecord );
-    } );
+    //   // transfer the energy chunk from the supplier to the consumer
+    //   this.transferEnergyChunk( energyChunkSupplier, energyChunkConsumer, energyBalanceRecord );
+    // } );
 
     // Now that continuous energy has been exchanged and then energy chunks have been exchanged based on the
     // accumulated energy exchange balances, we now check to see if any thermal energy containers are left with an
     // imbalance between their energy levels versus the number of energy chunks they contain.  If such an imbalance is
     // detected, we search for a good candidate with which to make an exchange and, if one is found, transfer an
     // energy chunk.  If no good candidate is found, no transfer is made.
-    this.thermalContainers.forEach( thermalContainer => {
+    // this.thermalContainers.forEach( thermalContainer => {
 
-      const energyChunkBalance = thermalContainer.getEnergyChunkBalance();
-      if ( energyChunkBalance !== 0 ) {
+    //   const energyChunkBalance = thermalContainer.getEnergyChunkBalance();
+    //   if ( energyChunkBalance !== 0 ) {
 
-        // This thermal energy container has an energy chunk imbalance.  Get a list of all thermal model elements with
-        // which a recent thermal energy exchange has occurred, because this lets us know who is in thermal contact
-        // ans could thus potentially supply or consume an energy chunk.
-        const recentlyUpdatedBalances = this.energyBalanceTracker.getBalancesForID( thermalContainer.id, true );
+    //     // This thermal energy container has an energy chunk imbalance.  Get a list of all thermal model elements with
+    //     // which a recent thermal energy exchange has occurred, because this lets us know who is in thermal contact
+    //     // ans could thus potentially supply or consume an energy chunk.
+    //     const recentlyUpdatedBalances = this.energyBalanceTracker.getBalancesForID( thermalContainer.id, true );
 
-        // set up some variables that will be used in the loops below
-        let bestExchangeCandidate = null;
-        let closestMatchExchangeRecord = null;
-        let currentRecord;
-        let otherElementInRecord;
+    //     // set up some variables that will be used in the loops below
+    //     let bestExchangeCandidate = null;
+    //     let closestMatchExchangeRecord = null;
+    //     let currentRecord;
+    //     let otherElementInRecord;
 
-        // Search for other thermal containers that can consume this container's excess or supply this container's
-        // needs, as the case may be.
-        for ( let i = 0; i < recentlyUpdatedBalances.length && bestExchangeCandidate === null; i++ ) {
-          currentRecord = recentlyUpdatedBalances[ i ];
-          otherElementInRecord = this.getThermalElementByID( currentRecord.getOtherID( thermalContainer.id ) );
-          const thisElementTemperature = thermalContainer.getTemperature();
-          const otherElementTemperature = otherElementInRecord.getTemperature();
+    //     // Search for other thermal containers that can consume this container's excess or supply this container's
+    //     // needs, as the case may be.
+    //     for ( let i = 0; i < recentlyUpdatedBalances.length && bestExchangeCandidate === null; i++ ) {
+    //       currentRecord = recentlyUpdatedBalances[ i ];
+    //       otherElementInRecord = this.getThermalElementByID( currentRecord.getOtherID( thermalContainer.id ) );
+    //       const thisElementTemperature = thermalContainer.getTemperature();
+    //       const otherElementTemperature = otherElementInRecord.getTemperature();
 
-          // See if there is another thermal container that is in the opposite situation from this one, i.e. one that
-          // has a deficit of ECs when this one has excess, or vice versa.
-          if ( this.thermalContainers.indexOf( otherElementInRecord ) >= 0 ) {
-            const otherECBalance = otherElementInRecord.getEnergyChunkBalance();
-            if ( energyChunkBalance > 0 && otherECBalance < 0 && thisElementTemperature > otherElementTemperature ||
-                 energyChunkBalance < 0 && otherECBalance > 0 && thisElementTemperature < otherElementTemperature ) {
+    //       // See if there is another thermal container that is in the opposite situation from this one, i.e. one that
+    //       // has a deficit of ECs when this one has excess, or vice versa.
+    //       if ( this.thermalContainers.indexOf( otherElementInRecord ) >= 0 ) {
+    //         const otherECBalance = otherElementInRecord.getEnergyChunkBalance();
+    //         if ( energyChunkBalance > 0 && otherECBalance < 0 && thisElementTemperature > otherElementTemperature ||
+    //              energyChunkBalance < 0 && otherECBalance > 0 && thisElementTemperature < otherElementTemperature ) {
 
-              // this is a great candidate for an exchange
-              bestExchangeCandidate = otherElementInRecord;
-              closestMatchExchangeRecord = currentRecord;
-            }
-          }
-        }
+    //           // this is a great candidate for an exchange
+    //           bestExchangeCandidate = otherElementInRecord;
+    //           closestMatchExchangeRecord = currentRecord;
+    //         }
+    //       }
+    //     }
 
-        if ( !bestExchangeCandidate ) {
+    //     if ( !bestExchangeCandidate ) {
 
-          // nothing found yet, see if there is a burner that could take or provide and energy chunk
-          for ( let i = 0; i < recentlyUpdatedBalances.length && bestExchangeCandidate === null; i++ ) {
-            currentRecord = recentlyUpdatedBalances[ i ];
-            const otherID = currentRecord.getOtherID( thermalContainer.id );
-            if ( otherID.indexOf( 'burner' ) >= 0 ) {
+    //       // nothing found yet, see if there is a burner that could take or provide and energy chunk
+    //       for ( let i = 0; i < recentlyUpdatedBalances.length && bestExchangeCandidate === null; i++ ) {
+    //         currentRecord = recentlyUpdatedBalances[ i ];
+    //         const otherID = currentRecord.getOtherID( thermalContainer.id );
+    //         if ( otherID.indexOf( 'burner' ) >= 0 ) {
 
-              // This is a burner, is it in a state where it is able to provide or receive an energy chunk?
-              const burner = this.getThermalElementByID( otherID );
-              const heatCoolLevel = burner.heatCoolLevelProperty.get();
-              if ( energyChunkBalance > 0 && heatCoolLevel < 0 || energyChunkBalance < 0 && heatCoolLevel > 0 ) {
-                bestExchangeCandidate = burner;
-                closestMatchExchangeRecord = currentRecord;
-              }
-            }
-          }
-        }
+    //           // This is a burner, is it in a state where it is able to provide or receive an energy chunk?
+    //           const burner = this.getThermalElementByID( otherID );
+    //           const heatCoolLevel = burner.heatCoolLevelProperty.get();
+    //           if ( energyChunkBalance > 0 && heatCoolLevel < 0 || energyChunkBalance < 0 && heatCoolLevel > 0 ) {
+    //             bestExchangeCandidate = burner;
+    //             closestMatchExchangeRecord = currentRecord;
+    //           }
+    //         }
+    //       }
+    //     }
 
-        if ( bestExchangeCandidate ) {
+    //     if ( bestExchangeCandidate ) {
 
-          // a good candidate was found, make the transfer
-          let energyChunkSupplier;
-          let energyChunkConsumer;
-          if ( energyChunkBalance > 0 ) {
-            energyChunkSupplier = thermalContainer;
-            energyChunkConsumer = bestExchangeCandidate;
-          }
-          else {
-            energyChunkSupplier = bestExchangeCandidate;
-            energyChunkConsumer = thermalContainer;
-          }
-          this.transferEnergyChunk( energyChunkSupplier, energyChunkConsumer, closestMatchExchangeRecord );
-        }
-      }
-    } );
+    //       // a good candidate was found, make the transfer
+    //       let energyChunkSupplier;
+    //       let energyChunkConsumer;
+    //       if ( energyChunkBalance > 0 ) {
+    //         energyChunkSupplier = thermalContainer;
+    //         energyChunkConsumer = bestExchangeCandidate;
+    //       }
+    //       else {
+    //         energyChunkSupplier = bestExchangeCandidate;
+    //         energyChunkConsumer = thermalContainer;
+    //       }
+    //       this.transferEnergyChunk( energyChunkSupplier, energyChunkConsumer, closestMatchExchangeRecord );
+    //     }
+    //   }
+    // } );
 
     // step model elements to animate energy chunks movement
     this.air.step( dt );

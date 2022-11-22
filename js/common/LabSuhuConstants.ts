@@ -11,7 +11,7 @@ import labSuhu from '../labSuhu.js';
 
 // time values for normal and fast-forward motion
 const FRAMES_PER_SECOND = 60.0;
-const SIM_TIME_PER_TICK_NORMAL = 1 / FRAMES_PER_SECOND;
+const SIM_TIME_PER_TICK_NORMAL = 1 / ( FRAMES_PER_SECOND / 25 );
 
 // physical temperature constants
 const ROOM_TEMPERATURE = 296; // in degrees Kelvin

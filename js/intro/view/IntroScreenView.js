@@ -144,8 +144,9 @@ class IntroScreenView extends ScreenView {
 
     // add the play/pause and step buttons
     const timeControlNode = new TimeControlNode( model.isPlayingProperty, {
-      timeSpeedProperty: LabSuhuQueryParameters.showSpeedControls ? model.timeSpeedProperty : null,
-      timeSpeeds: [ TimeSpeed.NORMAL, TimeSpeed.FAST ],
+      timeSpeedProperty: LabSuhuQueryParameters.showSpeedControls && !LabSuhuQueryParameters.hideSpeedControls ? model.timeSpeedProperty : null,
+      timeSpeeds: [ TimeSpeed.FAST, TimeSpeed.NORMAL, TimeSpeed.SLOW ],
+      speedRadioButtonGroupOnLeft: true,
       playPauseStepButtonOptions: {
         stepForwardButtonOptions: {
           listener: () => model.manualStep()

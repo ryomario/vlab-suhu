@@ -16,6 +16,7 @@ const SCHEMA_MAP = {
   // show the normal/fast forward buttons on the first screen
   // For internal use only, not public facing.
   showSpeedControls: { type: 'flag' } as QueryStringMachineSchema,
+  hideSpeedControls: { type: 'flag' } as QueryStringMachineSchema,
   stickyBurners: { type: 'flag' } as QueryStringMachineSchema,
 };
 
