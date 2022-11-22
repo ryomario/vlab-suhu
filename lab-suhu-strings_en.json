@@ -2,16 +2,14 @@
   "lab-suhu.title": {
     "value": "Lab Suhu"
   },
-  "screen": {
-    "introName": {
-      "value": "Pendahuluan"
-    },
-    "scaleName": {
-      "value": "Skala"
-    },
-    "conversionName": {
-      "value": "Konversi"
-    }
+  "screenIntroName": {
+    "value": "Pendahuluan"
+  },
+  "screenScaleName": {
+    "value": "Skala"
+  },
+  "screenConversionName": {
+    "value": "Konversi"
   },
   "unknownLiquid": {
     "value": "Cairan"
@@ -19,36 +17,28 @@
   "water": {
     "value": "Air"
   },
-  "celcius": {
-    "letter": {
-      "value": "°C"
-    },
-    "name": {
-      "value": "Celcius"
-    }
+  "celciusLetter": {
+    "value": "°C"
   },
-  "fahrenheit": {
-    "letter": {
-      "value": "°F"
-    },
-    "name": {
-      "value": "Fahrenheit"
-    }
+  "celciusName": {
+    "value": "Celcius"
   },
-  "reamur": {
-    "letter": {
-      "value": "°R"
-    },
-    "name": {
-      "value": "Reamur"
-    }
+  "fahrenheitLetter": {
+    "value": "°F"
   },
-  "kelvin": {
-    "letter": {
-      "value": "K"
-    },
-    "name": {
-      "value": "Kelvin"
-    }
+  "fahrenheitName": {
+    "value": "Fahrenheit"
+  },
+  "reamurLetter": {
+    "value": "°R"
+  },
+  "reamurName": {
+    "value": "Reamur"
+  },
+  "kelvinLetter": {
+    "value": "K"
+  },
+  "kelvinName": {
+    "value": "Kelvin"
   }
 }

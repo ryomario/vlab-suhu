@@ -28,7 +28,7 @@ class IntroScreen extends Screen<IntroModel, IntroScreenView> {
   public constructor( providedOptions: IntroScreenOptions ) {
 
     const options = optionize<IntroScreenOptions, SelfOptions, ScreenOptions>()( {
-      name: LabSuhuStrings.screen.introNameStringProperty,
+      name: LabSuhuStrings.screenIntroNameStringProperty,
 
       //TODO add default values for optional SelfOptions here
 

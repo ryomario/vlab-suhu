@@ -13,42 +13,32 @@ type StringsType = {
     'title': string;
     'titleStringProperty': LinkableProperty<string>;
   };
-  'screen': {
-    'introName': string;
-    'introNameStringProperty': LinkableProperty<string>;
-    'scaleName': string;
-    'scaleNameStringProperty': LinkableProperty<string>;
-    'conversionName': string;
-    'conversionNameStringProperty': LinkableProperty<string>;
-  };
+  'screenIntroName': string;
+  'screenIntroNameStringProperty': LinkableProperty<string>;
+  'screenScaleName': string;
+  'screenScaleNameStringProperty': LinkableProperty<string>;
+  'screenConversionName': string;
+  'screenConversionNameStringProperty': LinkableProperty<string>;
   'unknownLiquid': string;
   'unknownLiquidStringProperty': LinkableProperty<string>;
   'water': string;
   'waterStringProperty': LinkableProperty<string>;
-  'celcius': {
-    'letter': string;
-    'letterStringProperty': LinkableProperty<string>;
-    'name': string;
-    'nameStringProperty': LinkableProperty<string>;
-  };
-  'fahrenheit': {
-    'letter': string;
-    'letterStringProperty': LinkableProperty<string>;
-    'name': string;
-    'nameStringProperty': LinkableProperty<string>;
-  };
-  'reamur': {
-    'letter': string;
-    'letterStringProperty': LinkableProperty<string>;
-    'name': string;
-    'nameStringProperty': LinkableProperty<string>;
-  };
-  'kelvin': {
-    'letter': string;
-    'letterStringProperty': LinkableProperty<string>;
-    'name': string;
-    'nameStringProperty': LinkableProperty<string>;
-  };
+  'celciusLetter': string;
+  'celciusLetterStringProperty': LinkableProperty<string>;
+  'celciusName': string;
+  'celciusNameStringProperty': LinkableProperty<string>;
+  'fahrenheitLetter': string;
+  'fahrenheitLetterStringProperty': LinkableProperty<string>;
+  'fahrenheitName': string;
+  'fahrenheitNameStringProperty': LinkableProperty<string>;
+  'reamurLetter': string;
+  'reamurLetterStringProperty': LinkableProperty<string>;
+  'reamurName': string;
+  'reamurNameStringProperty': LinkableProperty<string>;
+  'kelvinLetter': string;
+  'kelvinLetterStringProperty': LinkableProperty<string>;
+  'kelvinName': string;
+  'kelvinNameStringProperty': LinkableProperty<string>;
 };
 
 const LabSuhuStrings = getStringModule( 'LAB_SUHU' ) as StringsType;

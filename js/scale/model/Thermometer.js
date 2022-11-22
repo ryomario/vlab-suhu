@@ -34,32 +34,32 @@ labSuhu.register( 'Thermometer', Thermometer );
 Thermometer.CELCIUS = new Thermometer( 
     'celcius',
     'C', 
-    LabSuhuStrings.celcius.name, 
-    LabSuhuStrings.celcius.letter, 
+    LabSuhuStrings.celciusName, 
+    LabSuhuStrings.celciusLetter, 
     LabSuhuConstants.CELCIUS.WATER_FREEZING_POINT_TEMPERATURE,
     LabSuhuConstants.CELCIUS.WATER_BOILING_POINT_TEMPERATURE
 );
 Thermometer.FAHRENHEIT = new Thermometer( 
     'fahrenheit',
     'F', 
-    LabSuhuStrings.fahrenheit.name, 
-    LabSuhuStrings.fahrenheit.letter, 
+    LabSuhuStrings.fahrenheitName, 
+    LabSuhuStrings.fahrenheitLetter, 
     LabSuhuConstants.FAHRENHEIT.WATER_FREEZING_POINT_TEMPERATURE,
     LabSuhuConstants.FAHRENHEIT.WATER_BOILING_POINT_TEMPERATURE
 );
 Thermometer.REAMUR = new Thermometer( 
     'reamur',
     'R', 
-    LabSuhuStrings.reamur.name, 
-    LabSuhuStrings.reamur.letter, 
+    LabSuhuStrings.reamurName, 
+    LabSuhuStrings.reamurLetter, 
     LabSuhuConstants.REAMUR.WATER_FREEZING_POINT_TEMPERATURE,
     LabSuhuConstants.REAMUR.WATER_BOILING_POINT_TEMPERATURE
 );
 Thermometer.KELVIN = new Thermometer( 
     'kelvin',
     'K', 
-    LabSuhuStrings.kelvin.name, 
-    LabSuhuStrings.kelvin.letter, 
+    LabSuhuStrings.kelvinName, 
+    LabSuhuStrings.kelvinLetter, 
     LabSuhuConstants.KELVIN.WATER_FREEZING_POINT_TEMPERATURE,
     LabSuhuConstants.KELVIN.WATER_BOILING_POINT_TEMPERATURE
 );

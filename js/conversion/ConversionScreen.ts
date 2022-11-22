@@ -28,7 +28,7 @@ class ConversionScreen extends Screen<ConversionModel, ConversionScreenView> {
   public constructor( providedOptions: ConversionScreenOptions ) {
 
     const options = optionize<ConversionScreenOptions, SelfOptions, ScreenOptions>()( {
-      name: LabSuhuStrings.screen.conversionNameStringProperty,
+      name: LabSuhuStrings.screenConversionNameStringProperty,
 
       //TODO add default values for optional SelfOptions here
 

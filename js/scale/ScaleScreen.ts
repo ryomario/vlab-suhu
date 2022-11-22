@@ -28,7 +28,7 @@ class ScaleScreen extends Screen<ScaleModel, ScaleScreenView> {
   public constructor( providedOptions: ScaleScreenOptions ) {
 
     const options = optionize<ScaleScreenOptions, SelfOptions, ScreenOptions>()( {
-      name: LabSuhuStrings.screen.scaleNameStringProperty,
+      name: LabSuhuStrings.screenScaleNameStringProperty,
 
       //TODO add default values for optional SelfOptions here
 
