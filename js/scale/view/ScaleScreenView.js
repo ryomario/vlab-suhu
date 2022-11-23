@@ -63,6 +63,26 @@ import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import StringIO from '../../../../tandem/js/types/StringIO.js';
 import TimeCounter from '../../common/view/TimeCounter.js';
 
+import celcius_atas_png from '../../../images/Kalkulasi Suhu_celcius_atas_png.js';
+import celcius_bawah_png from '../../../images/Kalkulasi Suhu_celcius_bawah_png.js';
+import celcius_range_png from '../../../images/Kalkulasi Suhu_celcius_range_png.js';
+import celcius_skala_png from '../../../images/Kalkulasi Suhu_celcius_skala_png.js';
+
+import fahrenheit_atas_png from '../../../images/Kalkulasi Suhu_fahrenheit_atas_png.js';
+import fahrenheit_bawah_png from '../../../images/Kalkulasi Suhu_fahrenheit_bawah_png.js';
+import fahrenheit_range_png from '../../../images/Kalkulasi Suhu_fahrenheit_range_png.js';
+import fahrenheit_skala_png from '../../../images/Kalkulasi Suhu_fahrenheit_skala_png.js';
+
+import reamur_atas_png from '../../../images/Kalkulasi Suhu_reamur_atas_png.js';
+import reamur_bawah_png from '../../../images/Kalkulasi Suhu_reamur_bawah_png.js';
+import reamur_range_png from '../../../images/Kalkulasi Suhu_reamur_range_png.js';
+import reamur_skala_png from '../../../images/Kalkulasi Suhu_reamur_skala_png.js';
+
+import kelvin_atas_png from '../../../images/Kalkulasi Suhu_kelvin_atas_png.js';
+import kelvin_bawah_png from '../../../images/Kalkulasi Suhu_kelvin_bawah_png.js';
+import kelvin_range_png from '../../../images/Kalkulasi Suhu_kelvin_range_png.js';
+import kelvin_skala_png from '../../../images/Kalkulasi Suhu_kelvin_skala_png.js';
+
 // CONSTANTS
 const unknownLiquidString = LabSuhuStrings.unknownLiquid;
 const waterString = LabSuhuStrings.water;
@@ -116,6 +136,36 @@ class ScaleScreenView extends ScreenView {
     super( options );
 
     this.model = model;
+
+    this.IMAGES_DESC_TEXT = {};
+    this.IMAGES_DESC_TEXT[ Thermometer.CELCIUS.name ] = {
+      atas: celcius_atas_png,
+      bawah: celcius_bawah_png,
+      range: celcius_range_png,
+      skala: celcius_skala_png,
+      visibleProperty: new BooleanProperty( false )
+    };
+    this.IMAGES_DESC_TEXT[ Thermometer.FAHRENHEIT.name ] = {
+      atas: fahrenheit_atas_png,
+      bawah: fahrenheit_bawah_png,
+      range: fahrenheit_range_png,
+      skala: fahrenheit_skala_png,
+      visibleProperty: new BooleanProperty( false )
+    };
+    this.IMAGES_DESC_TEXT[ Thermometer.REAMUR.name ] = {
+      atas: reamur_atas_png,
+      bawah: reamur_bawah_png,
+      range: reamur_range_png,
+      skala: reamur_skala_png,
+      visibleProperty: new BooleanProperty( false )
+    };
+    this.IMAGES_DESC_TEXT[ Thermometer.KELVIN.name ] = {
+      atas: kelvin_atas_png,
+      bawah: kelvin_bawah_png,
+      range: kelvin_range_png,
+      skala: kelvin_skala_png,
+      visibleProperty: new BooleanProperty( false )
+    };
     
     // Create the model-view transform. The primary units used in the model are meters, so significant zoom is used.
     // The multipliers for the 2nd parameter can be used to adjust where the point (0, 0) in the model appears in the
@@ -450,7 +500,6 @@ class ScaleScreenView extends ScreenView {
     backLayer.addChild( thermometerStorageAreaNode );
     thermometerStorageAreaNode.moveToBack(); // move behind the thermometerNodes when they are being stored
 
-
     const createThermometerNode = ( thermometer, thermometerType ) => {
       const thermometerVisibility = new BooleanProperty( false, {
         tandem: options.tandem.createTandem( thermometer.tandem.name + 'visiblity' ),
@@ -580,6 +629,77 @@ class ScaleScreenView extends ScreenView {
           }
         }
       } );
+
+      // termometer point
+      const upperPoint = new Image( this.IMAGES_DESC_TEXT[ thermometerType.name ].atas, {
+        // center: scaleDescImage.center.copy(),
+        // maxWidth: scaleDescImage.maxWidth,
+        visible: false,
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'upperPoint' )
+      } );
+      const lowerPoint = new Image( this.IMAGES_DESC_TEXT[ thermometerType.name ].bawah, {
+        // center: scaleDescImage.center.copy(),
+        // maxWidth: scaleDescImage.maxWidth,
+        visible: false,
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'lowerPoint' )
+      } );
+      const rangePoint = new Image( this.IMAGES_DESC_TEXT[ thermometerType.name ].range, {
+        // center: scaleDescImage.center.copy(),
+        // maxWidth: scaleDescImage.maxWidth,
+        visible: false,
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'rangePoint' )
+      } );
+      const skala = new Image( this.IMAGES_DESC_TEXT[ thermometerType.name ].skala, {
+        // center: scaleDescImage.center.copy(),
+        // maxWidth: scaleDescImage.maxWidth,
+        // visible: false,
+        visibleProperty: new DerivedProperty(
+          [
+            this.IMAGES_DESC_TEXT[ Thermometer.CELCIUS.name ].visibleProperty,
+            this.IMAGES_DESC_TEXT[ Thermometer.FAHRENHEIT.name ].visibleProperty,
+            this.IMAGES_DESC_TEXT[ Thermometer.REAMUR.name ].visibleProperty,
+            this.IMAGES_DESC_TEXT[ Thermometer.KELVIN.name ].visibleProperty,
+          ], 
+          ( 
+            c_visible,
+            f_visible,
+            r_visible,
+            k_visible
+          ) => {
+            return c_visible && f_visible && r_visible && k_visible;
+          }
+        ),
+        tandem: options.tandem.createTandem( thermometer.tandem.name + 'skala' )
+      } );
+      
+      scaleDescImage.addChild( upperPoint );
+      scaleDescImage.addChild( lowerPoint );
+      scaleDescImage.addChild( rangePoint );
+      scaleDescImage.addChild( skala );
+
+      this.IMAGES_DESC_TEXT[ thermometerType.name ].visibleProperty.link( visible => {
+        if ( !visible ) {
+          upperPoint.visible = false;
+          lowerPoint.visible = false;
+          rangePoint.visible = false;
+        }
+      } );
+
+      thermometer.sensedTemperatureProperty.link( temperature => {
+        const fixedNum = Utils.toFixedNumber( temperature, 0 );
+        if ( fixedNum === Utils.toFixedNumber( thermometerType.upperPoint, 0 ) ) {
+          // this.IMAGES_DESC_TEXT[ thermometerType.name ].visibleProperty.set( true );
+          upperPoint.visible = true;
+        }
+        if ( fixedNum === Utils.toFixedNumber( thermometerType.lowerPoint, 0 ) ) {
+          // this.IMAGES_DESC_TEXT[ thermometerType.name ].visibleProperty.set( true );
+          lowerPoint.visible = true;
+        }
+        if ( upperPoint.visible && lowerPoint.visible ) {
+          this.IMAGES_DESC_TEXT[ thermometerType.name ].visibleProperty.set( true );
+          rangePoint.visible = true;
+        }
+      } );
     };
 
     
@@ -640,7 +760,7 @@ class ScaleScreenView extends ScreenView {
     model.thermometerTypeProperty.link( thermometerType => {
       Object.keys( thermometerNodes ).map( key => {
         thermometersVisibility[ key ].set( key === thermometerType.name );
-        returnThermometerToStorageArea(model.thermometers[ thermometerType.name ], false, thermometerNodes[ key ], thermometerPositionsInStorageArea[ key ] );
+        returnThermometerToStorageArea(model.thermometers[ key ], false, thermometerNodes[ key ], thermometerPositionsInStorageArea[ key ] );
       } );
       // model.descVisibility.reset();
     } );
@@ -725,6 +845,11 @@ class ScaleScreenView extends ScreenView {
         returnAllThermometersToStorageArea();
         this.beakerProxyNodeGroup.forEach( beakerProxyNode => {
           beakerProxyNode.reset();
+        } );
+
+        Object.values( this.IMAGES_DESC_TEXT ).forEach( imageDescText => {
+          imageDescText.visibleProperty.toggle();
+          imageDescText.visibleProperty.reset(); 
         } );
       },
       right: this.layoutBounds.maxX - LabSuhuConstants.SCREEN_VIEW_X_MARGIN,

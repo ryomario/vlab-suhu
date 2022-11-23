@@ -1,6 +1,6 @@
 {
   "name": "lab-suhu",
-  "version": "1.0.0-dev.0",
+  "version": "1.1.0-dev.0",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
     "runnable": true,
     "supportedBrands": [
       "phet",
-      "adapted-from-phet"
+      "adapted-from-phet",
+      "stechoq-vlab"
     ],
     "supportsOutputJS": true
   },
