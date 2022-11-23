@@ -380,7 +380,6 @@ class ScaleModel {
     this.timeSpeedProperty.reset();
     this.air.reset();
     this.burner.reset();
-    this.descVisibility.reset();
     this.blockGroup.forEach( block => {
       block.reset();
     } );
@@ -390,6 +389,8 @@ class ScaleModel {
     Object.values( this.thermometers ).forEach( thermometer => thermometer.reset() );
     this.thermometerTypeProperty.reset();
     this.energyBalanceTracker.clearAllBalances();
+
+    this.descVisibility.reset();
   }
 
   /**
