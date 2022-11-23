@@ -457,7 +457,8 @@ class IntroModel {
    * @public
    */
   manualStep() {
-    this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    // this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    this.clock.stepClockWhilePaused();
     this.manualStepEmitter.emit( LabSuhuClock.SECONDS_PER_TICK ); // notify the view
   }
 

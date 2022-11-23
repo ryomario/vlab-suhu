@@ -83,7 +83,7 @@ class ScaleModel {
     } );
 
     // @public {BooleanProperty} - is the sim running or paused?
-    this.isPlayingProperty = new BooleanProperty( true, {
+    this.isPlayingProperty = new BooleanProperty( false, {
       tandem: tandem.createTandem( 'isPlayingProperty' ),
       phetioDocumentation: 'whether the screen is playing or paused'
     } );
@@ -434,7 +434,8 @@ class ScaleModel {
    * @public
    */
   manualStep() {
-    this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    // this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    this.clock.stepClockWhilePaused();
     this.manualStepEmitter.emit( LabSuhuClock.SECONDS_PER_TICK ); // notify the view
   }
 
