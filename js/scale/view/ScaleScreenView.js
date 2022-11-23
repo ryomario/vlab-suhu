@@ -57,6 +57,11 @@ import Thermometer from '../model/Thermometer.js';
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import ThermometerNode from '../../../../scenery-phet/js/ThermometerNode.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
+import StringIO from '../../../../tandem/js/types/StringIO.js';
+import TimeCounter from '../../common/view/TimeCounter.js';
 
 // CONSTANTS
 const unknownLiquidString = LabSuhuStrings.unknownLiquid;
@@ -67,6 +72,31 @@ const EDGE_INSET = 10; // screen edge padding, in screen coordinates
 const THERMOMETER_JUMP_ON_EXTRACTION = new Vector2( 5, 5 ); // in screen coordinates
 const THERMOMETER_ANIMATION_SPEED = 0.2; // in meters per second
 const MAX_THERMOMETER_ANIMATION_TIME = 1; // max time for thermometer return animation to complete, in seconds
+
+/**
+ * Have to artificially scale up the time readout so that Sun/Earth/Moon scene has a stable orbit with correct periods
+ * @param {TProperty<number>} timeProperty
+ * @param {Tandem} tandem
+ */
+ const timeFormatter = ( timeProperty, tandem ) => {
+  return new DerivedProperty( [
+    timeProperty,
+    // GravityAndOrbitsStrings.earthDaysStringProperty,
+    // GravityAndOrbitsStrings.pattern[ '0value' ][ '1unitsStringProperty' ]
+  ], ( time, 
+    // earthDaysString, 
+    // patternString 
+  ) => {
+    const seconds = Utils.toFixed( time % 60, 0 ).padStart( 2, 0 );
+    const minutes = Utils.toFixed( ( time / 60 ) % 60, 0 ).padStart( 2, 0 );
+    const hours = Utils.toFixed( ( time / 60 / 60 ), 0 );
+
+    return StringUtils.fillIn( '{{hours}}:{{minutes}}:{{seconds}}', { hours, minutes, seconds } );
+  }, {
+    tandem: tandem,
+    phetioValueType: StringIO
+  } );
+};
 
 class ScaleScreenView extends ScreenView {
 
@@ -154,6 +184,14 @@ class ScaleScreenView extends ScreenView {
       },
       tandem: options.tandem.createTandem( 'timeControlNode' )
     } );
+
+    const timeCounter = new TimeCounter( timeFormatter, model.clock, options.tandem.createTandem( 'timeCounter' ), {
+      scale: 1,
+      left: EDGE_INSET,
+      bottom: this.layoutBounds.height - EDGE_INSET
+    } );
+
+    this.addChild( timeCounter );
 
     // center time controls below the lab bench
     timeControlNode.center = new Vector2( this.layoutBounds.centerX, centerYBelowSurface );

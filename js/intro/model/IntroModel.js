@@ -405,6 +405,7 @@ class IntroModel {
     this.air.reset();
     this.burner.reset();
     this.descVisibility.reset();
+    this.clock.resetSimulationTime();
     // this.burners.forEach( burner => {
     //   burner.reset();
     // } );
@@ -427,21 +428,21 @@ class IntroModel {
    */
    stepClock( dt ) {
     // standardized time step - based on the slowest time step for the given orbital mode
-    let smallestTimeStep;
+    const smallestTimeStep = this.clock.baseDTValue;
     // get the number of times we will need to step the model based on the dt passed in
     let numberOfSteps;
     switch ( this.clock.timeSpeedProperty.value ) {
       case TimeSpeed.SLOW:
-        smallestTimeStep = this.clock.baseDTValue * 0.1;
+        // smallestTimeStep = this.clock.baseDTValue * 0.1;
         numberOfSteps = 1;
         break;
       case TimeSpeed.NORMAL:
-        smallestTimeStep = this.clock.baseDTValue;
-        numberOfSteps = 1;
+        // smallestTimeStep = this.clock.baseDTValue;
+        numberOfSteps = 4;
         break;
       default: // TimeSpeed.FAST
-        smallestTimeStep = this.clock.baseDTValue;
-        numberOfSteps = 4;
+        // smallestTimeStep = this.clock.baseDTValue;
+        numberOfSteps = 15;
     }
 
     for ( let i = 0; i < numberOfSteps; i++ ) {
@@ -456,8 +457,8 @@ class IntroModel {
    * @public
    */
   manualStep() {
-    this.stepModel( LabSuhuConstants.SIM_TIME_PER_TICK_NORMAL );
-    this.manualStepEmitter.emit( LabSuhuConstants.SIM_TIME_PER_TICK_NORMAL ); // notify the view
+    this.stepModel( LabSuhuClock.SECONDS_PER_TICK );
+    this.manualStepEmitter.emit( LabSuhuClock.SECONDS_PER_TICK ); // notify the view
   }
 
   /**

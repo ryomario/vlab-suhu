@@ -391,6 +391,7 @@ class ScaleModel {
     this.energyBalanceTracker.clearAllBalances();
 
     this.descVisibility.reset();
+    this.clock.resetSimulationTime();
   }
 
   /**
@@ -401,22 +402,22 @@ class ScaleModel {
   stepClock( dt ) {
     // const NORMAL_STEP = 2;
     // standardized time step - based on the slowest time step for the given orbital mode
-    let smallestTimeStep;
+    const smallestTimeStep = this.clock.baseDTValue;
     // console.log('dt',dt);
     // get the number of times we will need to step the model based on the dt passed in
     let numberOfSteps;
     switch ( this.clock.timeSpeedProperty.value ) {
       case TimeSpeed.SLOW:
-        smallestTimeStep = this.clock.baseDTValue * 0.1;
+        // smallestTimeStep = this.clock.baseDTValue;
         numberOfSteps = 1;
         break;
       case TimeSpeed.NORMAL:
-        smallestTimeStep = this.clock.baseDTValue;
-        numberOfSteps = 1;
+        // smallestTimeStep = this.clock.baseDTValue;
+        numberOfSteps = 4;
         break;
       default: // TimeSpeed.FAST
-        smallestTimeStep = this.clock.baseDTValue;
-        numberOfSteps = 4;
+        // smallestTimeStep = this.clock.baseDTValue;
+        numberOfSteps = 15;
     }
 
     for ( let i = 0; i < numberOfSteps; i++ ) {

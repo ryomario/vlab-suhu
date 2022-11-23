@@ -27,6 +27,7 @@ const LabSuhuColors = {
     default: BACKGROUND_COLOR
   } ),
   CLOCK_CONTROL_BACKGROUND_COLOR: new Color( 216, 188, 136 ),
+  CLOCK_CONTROL_FOREROUND_COLOR: new Color( 30, 30, 30 ),
   FLAME_ORANGE: new Color( 'orange' ),
   ICE_BLUE: new Color( '#87CEFA' ),
   CONTROL_PANEL_BACKGROUND_COLOR: new Color( 190, 220, 255 ),

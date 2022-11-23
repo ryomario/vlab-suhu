@@ -40,5 +40,8 @@
   },
   "kelvinName": {
     "value": "Kelvin"
+  },
+  "clear": {
+    "value": "Clear"
   }
 }

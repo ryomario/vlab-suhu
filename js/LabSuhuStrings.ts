@@ -39,6 +39,9 @@ type StringsType = {
   'kelvinLetterStringProperty': LinkableProperty<string>;
   'kelvinName': string;
   'kelvinNameStringProperty': LinkableProperty<string>;
+
+  'clear': string;
+  'clearStringProperty': LinkableProperty<string>;
 };
 
 const LabSuhuStrings = getStringModule( 'LAB_SUHU' ) as StringsType;

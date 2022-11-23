@@ -20,6 +20,7 @@ import SuhuBeakerContainer from '../model/SuhuBeakerContainer.js';
 const PERSPECTIVE_PROPORTION = -LabSuhuConstants.Z_TO_Y_OFFSET_MULTIPLIER;
 const LABEL_TEXT_FONT = new PhetFont( 26 );
 const M_TO_LITER_MULTIPLIER = 1000;
+const M_TO_MILILITER_MULTIPLIER = 1000000;
 
 class SuhuBeakerContainerView extends BeakerContainerView {
     /**
@@ -39,13 +40,14 @@ class SuhuBeakerContainerView extends BeakerContainerView {
         // get a Bounds2 object defining the beaker size and position in the view
         const beakerBounds = scaleTransform.transformShape( beaker.getUntransformedBounds() );
 
-        const fluidVolumeToLiterText = ( volume ) => {
-            const volumeLiter = volume * M_TO_LITER_MULTIPLIER;
+        // meters^3 to mililiters
+        const fluidVolumeToText = ( volume ) => {
+            const volumeLiter = volume * M_TO_MILILITER_MULTIPLIER;
 
-            return volumeLiter.toFixed( 2 ) + ' L';
+            return volumeLiter.toFixed( 0 ) + ' ml';
         }
 
-        const labelTextVolume = new Text( fluidVolumeToLiterText( beaker.fluidVolume.get() ), {
+        const labelTextVolume = new Text( fluidVolumeToText( beaker.fluidVolume.get() ), {
             font: new PhetFont( 16 ),
             maxWidth: beakerBounds.width * 0.7, // empirically determined to look nice
             tandem: options.tandem.createTandem( 'labelTextVolume' ),
@@ -54,7 +56,7 @@ class SuhuBeakerContainerView extends BeakerContainerView {
         const ellipseHeight = beakerBounds.getWidth() * PERSPECTIVE_PROPORTION;
 
         beaker.fluidVolume.link( volume => {
-            labelTextVolume.text = fluidVolumeToLiterText( volume );
+            labelTextVolume.text = fluidVolumeToText( volume );
         } );
         labelTextVolume.translation = new Vector2(
             beakerBounds.centerX - labelTextVolume.bounds.width / 2,
