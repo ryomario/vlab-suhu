@@ -329,6 +329,7 @@ class ScaleModel {
     // @public - used to notify the view that a manual step was called
     this.manualStepEmitter = new Emitter( { parameters: [ { valueType: 'number' } ] } );
     
+    // this.stepCompleteEmitter = new Emitter();
   }
 
   /**
@@ -397,26 +398,32 @@ class ScaleModel {
    * @returns {number} elapsed time
    */
   stepClock( dt ) {
+    // const NORMAL_STEP = 2;
     // standardized time step - based on the slowest time step for the given orbital mode
     let smallestTimeStep;
+    // console.log('dt',dt);
     // get the number of times we will need to step the model based on the dt passed in
     let numberOfSteps;
     switch ( this.clock.timeSpeedProperty.value ) {
       case TimeSpeed.SLOW:
-        smallestTimeStep = Math.min( this.clock.baseDTValue, dt );
-        numberOfSteps = 0.01;
+        smallestTimeStep = this.clock.baseDTValue * 0.1;
+        numberOfSteps = 1;
         break;
       case TimeSpeed.NORMAL:
-        smallestTimeStep = dt;
+        smallestTimeStep = this.clock.baseDTValue;
         numberOfSteps = 1;
         break;
       default: // TimeSpeed.FAST
-        smallestTimeStep = Math.max( this.clock.baseDTValue, dt );
+        smallestTimeStep = this.clock.baseDTValue;
         numberOfSteps = 4;
     }
 
-    this.stepModel( smallestTimeStep * numberOfSteps );
+    for ( let i = 0; i < numberOfSteps; i++ ) {
+      this.stepModel( smallestTimeStep );
+    }
+    // this.stepCompleteEmitter.emit();
 
+    // console.log('smallestTimeStep',smallestTimeStep);
     return smallestTimeStep * numberOfSteps;
   }
 

@@ -432,19 +432,21 @@ class IntroModel {
     let numberOfSteps;
     switch ( this.clock.timeSpeedProperty.value ) {
       case TimeSpeed.SLOW:
-        smallestTimeStep = Math.min( this.clock.baseDTValue, dt );
-        numberOfSteps = 0.01;
+        smallestTimeStep = this.clock.baseDTValue * 0.1;
+        numberOfSteps = 1;
         break;
       case TimeSpeed.NORMAL:
-        smallestTimeStep = dt;
+        smallestTimeStep = this.clock.baseDTValue;
         numberOfSteps = 1;
         break;
       default: // TimeSpeed.FAST
-        smallestTimeStep = Math.max( this.clock.baseDTValue, dt );
+        smallestTimeStep = this.clock.baseDTValue;
         numberOfSteps = 4;
     }
 
-    this.stepModel( smallestTimeStep * numberOfSteps );
+    for ( let i = 0; i < numberOfSteps; i++ ) {
+      this.stepModel( smallestTimeStep );
+    }
 
     return smallestTimeStep * numberOfSteps;
   }
