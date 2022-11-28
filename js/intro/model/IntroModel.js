@@ -109,7 +109,7 @@ class IntroModel {
     } );
 
     // @public {BooleanProperty} - is the sim running or paused?
-    this.isPlayingProperty = new BooleanProperty( true, {
+    this.isPlayingProperty = new BooleanProperty( false, {
       tandem: tandem.createTandem( 'isPlayingProperty' ),
       phetioDocumentation: 'whether the screen is playing or paused'
     } );
