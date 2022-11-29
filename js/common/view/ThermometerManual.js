@@ -46,7 +46,7 @@ class ThermometerManual extends ThermometerNode {
             tickLabelFont: new PhetFont( { size: 18 } ),
             tickLabelColor: 'black',
             tickLabelWidth: 100,
-            snapInterval: 50,
+            snapInterval: 1,
             zeroLevel: 'bulbTop',
             thumbSize: 25,
 

@@ -133,6 +133,8 @@ class ConversionScreenView extends ScreenView {
       );
       thermometersNode[ thermometerType.name ] = thermometerNode;
     }
+
+    let savedBottomThermometerNode;
     
     model.thermometerTypeLeftProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
@@ -155,8 +157,14 @@ class ConversionScreenView extends ScreenView {
 
         comboBoxThermometerLeft.setCenterTop( centerTop );
 
+        
         thermometersNode[ thermometerType.name ].centerX = centerX;
-        thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
+        if ( !savedBottomThermometerNode ) {
+          thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
+          savedBottomThermometerNode = thermometersNode[ thermometerType.name ].getBottom();
+        } else {
+          thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+        }
 
         // set visibility of combobox item
         comboBoxThermometerRight.setItemVisible( thermometerType, false);
@@ -192,8 +200,14 @@ class ConversionScreenView extends ScreenView {
 
         comboBoxThermometerRight.setCenterTop( centerTop );
 
+        
         thermometersNode[ thermometerType.name ].centerX = centerX;
-        thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
+        if ( !savedBottomThermometerNode ) {
+          thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
+          savedBottomThermometerNode = thermometersNode[ thermometerType.name ].getBottom();
+        } else {
+          thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+        }
 
         // set visibility of combobox item
         comboBoxThermometerLeft.setItemVisible( thermometerType, false);

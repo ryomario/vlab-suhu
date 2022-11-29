@@ -112,7 +112,7 @@ class ConversionModel {
         const otherTemperatureProperty = this.thermometersTemperatureProperty[ otherThermometerType.name ];
         if ( temperatureProperty !== otherTemperatureProperty ) {
           temperatureProperty.link( temperature => {
-            otherTemperatureProperty.values = otherThermometerType.getConverterFrom( thermometerType )( temperature );
+            otherTemperatureProperty.value = otherThermometerType.getConverterFrom( thermometerType )( temperature );
           } );
         }
       }
@@ -128,18 +128,20 @@ class ConversionModel {
       }
     };
     // Listen on thermometer type change then set the temperature property to not deferred so the property can send notif on change
-    this.thermometerTypeLeftProperty.link( thermometerType => {
+    this.thermometerTypeLeftProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( thermometerType !== Thermometer.NONE ) {
-        setTemperaturePropertyDeferred();
-        this.thermometersTemperatureProperty[ thermometerType.name ].setDeferred( false );
-        this.thermometersTemperatureProperty[ this.thermometerTypeRightProperty.value ]?.setDeferred( false );
+        // setTemperaturePropertyDeferred();
+        const notifyListeners = this.thermometersTemperatureProperty[ thermometerType.name ]?.setDeferred( false );
+        notifyListeners?.();
+        this.thermometersTemperatureProperty[ oldThermometerType?.name ]?.setDeferred( true );
       }
     } );
-    this.thermometerTypeRightProperty.link( thermometerType => {
+    this.thermometerTypeRightProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( thermometerType !== Thermometer.NONE ) {
-        setTemperaturePropertyDeferred();
-        this.thermometersTemperatureProperty[ thermometerType.name ].setDeferred( false );
-        this.thermometersTemperatureProperty[ this.thermometerTypeLeftProperty.value ]?.setDeferred( false );
+        // setTemperaturePropertyDeferred();
+        const notifyListeners = this.thermometersTemperatureProperty[ thermometerType.name ]?.setDeferred( false );
+        notifyListeners?.();
+        this.thermometersTemperatureProperty[ oldThermometerType?.name ]?.setDeferred( true );
       }
     } );
 
@@ -154,6 +156,8 @@ class ConversionModel {
     this.thermometerRightVisibilityProperty.reset();
     for ( const temperatureProperty of Object.values( this.thermometersTemperatureProperty ) ) {
       temperatureProperty.reset();
+      temperatureProperty.setDeferred( false );
+      temperatureProperty.setDeferred( true );
     }
   }
 
