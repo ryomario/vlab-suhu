@@ -122,7 +122,7 @@ class ConversionScreenView extends ScreenView {
       highlightFill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR.brighterColor( 0.9 ),
     } );
 
-    const thermometersNode = {};
+    this.thermometersNode = {};
     for ( const thermometerType of ConversionModel.THERMOMETERS_TYPE ) {
       const thermometerNode = new ThermometerManual(
         model.thermometersTemperatureProperty[ thermometerType.name ],
@@ -131,22 +131,22 @@ class ConversionScreenView extends ScreenView {
           tandem: options.tandem.createTandem( thermometerType.name + 'Node' )
         }
       );
-      thermometersNode[ thermometerType.name ] = thermometerNode;
+      this.thermometersNode[ thermometerType.name ] = thermometerNode;
     }
 
     let savedBottomThermometerNode;
     
     model.thermometerTypeLeftProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
-        thermometerLeftNode.removeChild( thermometersNode[ oldThermometerType.name ] );
-        thermometersNode[ oldThermometerType.name ].visible = false;
+        thermometerLeftNode.removeChild( this.thermometersNode[ oldThermometerType.name ] );
+        this.thermometersNode[ oldThermometerType.name ].visible = false;
 
         // set visibility of combobox item
         comboBoxThermometerRight.setItemVisible( oldThermometerType, true);
       }
       if ( thermometerType !== Thermometer.NONE ) {
-        thermometersNode[ thermometerType.name ].visible = true;
-        thermometerLeftNode.addChild( thermometersNode[ thermometerType.name ] );
+        this.thermometersNode[ thermometerType.name ].visible = true;
+        thermometerLeftNode.addChild( this.thermometersNode[ thermometerType.name ] );
 
         // repositioning
         const centerX = modelViewTransform.modelToViewX( model.thermometerLeftXPosition );
@@ -158,12 +158,12 @@ class ConversionScreenView extends ScreenView {
         comboBoxThermometerLeft.setCenterTop( centerTop );
 
         
-        thermometersNode[ thermometerType.name ].centerX = centerX;
+        this.thermometersNode[ thermometerType.name ].centerX = centerX;
         if ( !savedBottomThermometerNode ) {
-          thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
-          savedBottomThermometerNode = thermometersNode[ thermometerType.name ].getBottom();
+          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
+          savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
-          thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+          this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
         }
 
         // set visibility of combobox item
@@ -181,15 +181,15 @@ class ConversionScreenView extends ScreenView {
     } );
     model.thermometerTypeRightProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
-        thermometerRightNode.removeChild( thermometersNode[ oldThermometerType.name ] );
-        thermometersNode[ oldThermometerType.name ].visible = false;
+        thermometerRightNode.removeChild( this.thermometersNode[ oldThermometerType.name ] );
+        this.thermometersNode[ oldThermometerType.name ].visible = false;
 
         // set visibility of combobox item
         comboBoxThermometerLeft.setItemVisible( oldThermometerType, true);
       }
       if ( thermometerType !== Thermometer.NONE ) {
-        thermometersNode[ thermometerType.name ].visible = true;
-        thermometerRightNode.addChild( thermometersNode[ thermometerType.name ] );
+        this.thermometersNode[ thermometerType.name ].visible = true;
+        thermometerRightNode.addChild( this.thermometersNode[ thermometerType.name ] );
 
         // repositioning
         const centerX = modelViewTransform.modelToViewX( model.thermometerRightXPosition );
@@ -201,12 +201,12 @@ class ConversionScreenView extends ScreenView {
         comboBoxThermometerRight.setCenterTop( centerTop );
 
         
-        thermometersNode[ thermometerType.name ].centerX = centerX;
+        this.thermometersNode[ thermometerType.name ].centerX = centerX;
         if ( !savedBottomThermometerNode ) {
-          thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
-          savedBottomThermometerNode = thermometersNode[ thermometerType.name ].getBottom();
+          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
+          savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
-          thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+          this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
         }
 
         // set visibility of combobox item
@@ -253,7 +253,9 @@ class ConversionScreenView extends ScreenView {
    * Resets the view.
    */
   reset() {
-    //TODO
+    for ( const thermometer of Object.values( this.thermometersNode ) ) {
+      thermometer.reset();
+    }
   }
 
   /**

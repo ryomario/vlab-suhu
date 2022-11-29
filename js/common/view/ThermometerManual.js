@@ -77,6 +77,10 @@ class ThermometerManual extends ThermometerNode {
         } );
         this.triangleNode.touchArea = this.triangleNode.localBounds.dilatedXY( 10, 10 );
 
+        temperatureProperty.link( temperature => {
+            this.updateThumb( temperature, options );
+        } );
+
         let clickYOffset;
         this.triangleNode.addInputListener( new DragListener( {
         start: event => {
@@ -91,7 +95,7 @@ class ThermometerManual extends ThermometerNode {
             options.minTemperature,
             options.maxTemperature
             );
-            this.updateThumb( temperatureProperty, options );
+            // this.updateThumb( temperatureProperty, options );
         },
         allowTouchSnag: true,
         tandem: options.tandem.createTandem( 'dragListener' )
@@ -152,12 +156,12 @@ class ThermometerManual extends ThermometerNode {
      * @param {Object} [options]
      * @public
      */
-    updateThumb( temperatureProperty, options ) {
-        assert && assert( temperatureProperty.value >= options.minTemperature &&
-        temperatureProperty.value <= options.maxTemperature,
+    updateThumb( temperature, options ) {
+        assert && assert( temperature >= options.minTemperature &&
+        temperature <= options.maxTemperature,
         'temperature has exceeded thermometer bounds' );
         this.triangleNode.left = options.tubeWidth / 2;
-        this.triangleNode.centerY = -this.temperatureToYPos( temperatureProperty.value );
+        this.triangleNode.centerY = -this.temperatureToYPos( temperature );
     }
 
     /**
