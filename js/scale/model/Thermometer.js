@@ -27,6 +27,43 @@ class Thermometer {
         this.lowerPoint = lowerPoint;
         this.upperPoint = upperPoint;
     }
+
+    get middlePoint() {
+        return this.lowerPoint + ( ( this.upperPoint - this.lowerPoint ) / 2 );
+    }
+
+    /**
+     * Get function that can convert temperature from given thermometer type to this thermometer type
+     * @param {Thermometer} thermometerType ThermometerType
+     * @return {( temperature:number ) => number} Function to convertion to other type
+     */
+    getConverterFrom( thermometerType ) {
+        let thermometerConstant;
+        switch ( this.name ) {
+            case 'celcius':
+                thermometerConstant = LabSuhuConstants.CELCIUS;
+                break;
+            case 'fahrenheit':
+                thermometerConstant = LabSuhuConstants.FAHRENHEIT;
+                break;
+            case 'reamur':
+                thermometerConstant = LabSuhuConstants.REAMUR;
+                break;
+            default: // case 'kelvin'
+                thermometerConstant = LabSuhuConstants.KELVIN;
+        }
+
+        switch ( thermometerType.name ) {
+            case 'celcius':
+                return thermometerConstant.convertFromCelcius;
+            case 'fahrenheit':
+                return thermometerConstant.convertFromFahrenheit;
+            case 'reamur':
+                return thermometerConstant.convertFromReamur;
+            default: // case 'kelvin'
+                return thermometerConstant.convertFromKelvin;
+        }        
+    }
 }
 
 labSuhu.register( 'Thermometer', Thermometer );
@@ -62,6 +99,14 @@ Thermometer.KELVIN = new Thermometer(
     LabSuhuStrings.kelvinLetter, 
     LabSuhuConstants.KELVIN.WATER_FREEZING_POINT_TEMPERATURE,
     LabSuhuConstants.KELVIN.WATER_BOILING_POINT_TEMPERATURE
+);
+Thermometer.NONE = new Thermometer(
+    'none',
+    '',
+    '',
+    '',
+    0,
+    0
 );
 
 Thermometer.TYPES = [

@@ -60,6 +60,15 @@ const LabSuhuConstants = {
     convertFromKelvin: ( temperature: number ): number => {
       return temperature - 273.15;
     },
+    convertFromReamur: ( temperature: number ): number => {
+      return temperature * 5 / 4;
+    },
+    convertFromFahrenheit: ( temperature: number ): number => {
+      return ( temperature - 32 ) * 5 / 9;
+    },
+    convertFromCelcius: ( temperature: number ): number => {
+      return temperature;
+    },
   },
   FAHRENHEIT: {
     WATER_FREEZING_POINT_TEMPERATURE: 32,
@@ -67,7 +76,16 @@ const LabSuhuConstants = {
     ROOM_TEMPERATURE: 73.13,
     convertFromKelvin: ( temperature: number ): number => {
       return ( temperature - 273.15 ) * 9 / 5 + 32;
-    }
+    },
+    convertFromReamur: ( temperature: number ): number => {
+      return ( temperature * 9 / 4 ) + 32;
+    },
+    convertFromFahrenheit: ( temperature: number ): number => {
+      return temperature;
+    },
+    convertFromCelcius: ( temperature: number ): number => {
+      return ( temperature * 9 / 5 ) + 32;
+    },
   },
   REAMUR: {
     WATER_FREEZING_POINT_TEMPERATURE: 0,
@@ -75,7 +93,16 @@ const LabSuhuConstants = {
     ROOM_TEMPERATURE: 18.28,
     convertFromKelvin: ( temperature: number ): number => {
       return ( temperature - 273.15 ) * 4 / 5;
-    }
+    },
+    convertFromReamur: ( temperature: number ): number => {
+      return temperature;
+    },
+    convertFromFahrenheit: ( temperature: number ): number => {
+      return ( temperature - 32 ) * 4 / 9;
+    },
+    convertFromCelcius: ( temperature: number ): number => {
+      return temperature * 4 / 5;
+    },
   },
   KELVIN: {
     WATER_FREEZING_POINT_TEMPERATURE: 273.15,
@@ -83,7 +110,16 @@ const LabSuhuConstants = {
     ROOM_TEMPERATURE: ROOM_TEMPERATURE,
     convertFromKelvin: ( temperature: number ): number => {
       return temperature;
-    }
+    },
+    convertFromReamur: ( temperature: number ): number => {
+      return ( temperature * 5 / 4 ) + 273.15;
+    },
+    convertFromFahrenheit: ( temperature: number ): number => {
+      return ( temperature - 32 ) * 5 / 9 + 273.15;
+    },
+    convertFromCelcius: ( temperature: number ): number => {
+      return temperature + 273.15;
+    },
   },
 
   // constants for the burners.

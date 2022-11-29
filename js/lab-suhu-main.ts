@@ -25,21 +25,21 @@ simLauncher.launch( () => {
   const screens = [
     new IntroScreen( { tandem: tandem.createTandem( 'IntroScreen' ) } ),
     new ScaleScreen( { tandem: tandem.createTandem( 'ScaleScreen' ) } ),
-    // new ConversionScreen( { tandem: tandem.createTandem( 'ConversionScreen' ) } )
+    new ConversionScreen( { tandem: tandem.createTandem( 'ConversionScreen' ) } )
   ];
 
   const options: SimOptions = {
 
     //TODO fill in credits, all of these fields are optional, see joist.CreditsNode
     credits: {
-      leadDesign: '',
-      softwareDevelopment: '',
-      team: '',
-      contributors: '',
-      qualityAssurance: '',
-      graphicArts: '',
-      soundDesign: '',
-      thanks: ''
+      // leadDesign: '',
+      softwareDevelopment: 'Khairul Arifin, Mario',
+      team: 'Nia, Sofi, Tanti',
+      // contributors: '',
+      // qualityAssurance: '',
+      graphicArts: 'Oscar',
+      // soundDesign: '',
+      // thanks: ''
     }
   };
 
