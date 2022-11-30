@@ -17,7 +17,7 @@ import ConversionModel from '../model/ConversionModel.js';
 import SkyNode from '../../../../energy-forms-and-changes/js/common/view/SkyNode.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import ThermometerManual from '../../common/view/ThermometerManual.js';
-import { Node, Text } from '../../../../scenery/js/imports.js';
+import { Color, Node, Text } from '../../../../scenery/js/imports.js';
 import Thermometer from '../../scale/model/Thermometer.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -128,6 +128,8 @@ class ConversionScreenView extends ScreenView {
         model.thermometersTemperatureProperty[ thermometerType.name ],
         thermometerType,
         {
+          showLabelValue: true,
+          labelColor: '#038',
           tandem: options.tandem.createTandem( thermometerType.name + 'Node' )
         }
       );

@@ -6,6 +6,7 @@
  * @author Mario (Software Engineer)
  */
 
+import DerivedProperty from "../../../../axon/js/DerivedProperty.js";
 import Dimension2 from "../../../../dot/js/Dimension2.js";
 import Utils from "../../../../dot/js/Utils.js";
 import Shape from "../../../../kite/js/Shape.js";
@@ -32,6 +33,10 @@ class ThermometerManual extends ThermometerNode {
      */
     constructor( temperatureProperty, thermometerType, providedOptions ) {
         const options = merge( {
+            showLabelValue: false,
+            labelFont: new PhetFont( { size: 24, weight: 'bold' } ),
+            labelColor: '#c41515',
+            labelWidth: 120,
             minTemperature: thermometerType.lowerPoint,
             maxTemperature: thermometerType.upperPoint,
             bulbDiameter: 35,
@@ -68,6 +73,17 @@ class ThermometerManual extends ThermometerNode {
             tandem: options.tandem.createTandem( 'tickContainer' )
         } );
 
+        // label value
+        const labelValueText = new Text(
+            new DerivedProperty( [ temperatureProperty ], temperature => Utils.toFixedNumber( temperature, 2 ).toString() ),
+            {
+                font: options.labelFont,
+                fill: options.labelColor,
+                maxWidth: options.labelWidth
+            }
+        );
+        const labelValueCenterTop = this.getCenterBottom().copy().plusXY( 0, 10 );
+
         const thumbDimension = new Dimension2( options.thumbSize, options.thumbSize );
 
         // @private thumb node thermometer's slider
@@ -79,6 +95,11 @@ class ThermometerManual extends ThermometerNode {
 
         temperatureProperty.link( temperature => {
             this.updateThumb( temperature, options );
+
+            // update position labelValueText
+            labelValueText.setCenterTop(
+                labelValueCenterTop
+            );
         } );
 
         let clickYOffset;
@@ -107,6 +128,9 @@ class ThermometerManual extends ThermometerNode {
 
         this.addChild( tickContainer );
         this.addChild( this.triangleNode );
+        if ( options.showLabelValue ) {
+            this.addChild( labelValueText );
+        }
 
         // @private position of the center of the thermometer (not the whole node) relative to the right of the node
         this._thermometerCenterXFromRight = -this.triangleNode.width - options.tubeWidth / 2;
