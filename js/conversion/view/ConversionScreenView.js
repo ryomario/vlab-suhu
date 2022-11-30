@@ -165,7 +165,7 @@ class ConversionScreenView extends ScreenView {
 
         // y pos
         if ( !savedBottomThermometerNode ) {
-          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
+          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + 2 * EDGE_INSET;
           savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
           this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
@@ -214,7 +214,7 @@ class ConversionScreenView extends ScreenView {
 
         // y pos
         if ( !savedBottomThermometerNode ) {
-          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
+          this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + 2 * EDGE_INSET;
           savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
           this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );

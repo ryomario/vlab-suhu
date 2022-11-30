@@ -156,7 +156,8 @@ class ConversionModel {
     this.thermometerRightVisibilityProperty.reset();
     for ( const temperatureProperty of Object.values( this.thermometersTemperatureProperty ) ) {
       temperatureProperty.reset();
-      temperatureProperty.setDeferred( false );
+      const notifyListeners = temperatureProperty.setDeferred( false );
+      notifyListeners?.();
       temperatureProperty.setDeferred( true );
     }
   }
