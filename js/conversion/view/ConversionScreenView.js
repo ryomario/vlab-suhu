@@ -135,6 +135,8 @@ class ConversionScreenView extends ScreenView {
     }
 
     let savedBottomThermometerNode;
+    let savedRightThermometerNodeLeft;
+    let savedRightThermometerNodeRight;
     
     model.thermometerTypeLeftProperty.link( ( thermometerType, oldThermometerType ) => {
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
@@ -157,13 +159,19 @@ class ConversionScreenView extends ScreenView {
 
         comboBoxThermometerLeft.setCenterTop( centerTop );
 
-        
-        this.thermometersNode[ thermometerType.name ].centerX = centerX;
+        // y pos
         if ( !savedBottomThermometerNode ) {
           this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerLeft.bottom + EDGE_INSET;
           savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
           this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+        }
+        // x pos
+        if ( !savedRightThermometerNodeLeft ) {
+          this.thermometersNode[ thermometerType.name ].centerX = centerX;
+          savedRightThermometerNodeLeft = this.thermometersNode[ thermometerType.name ].getRight();
+        } else {
+          this.thermometersNode[ thermometerType.name ].setRight( savedRightThermometerNodeLeft );
         }
 
         // set visibility of combobox item
@@ -200,13 +208,19 @@ class ConversionScreenView extends ScreenView {
 
         comboBoxThermometerRight.setCenterTop( centerTop );
 
-        
-        this.thermometersNode[ thermometerType.name ].centerX = centerX;
+        // y pos
         if ( !savedBottomThermometerNode ) {
           this.thermometersNode[ thermometerType.name ].top = comboBoxThermometerRight.bottom + EDGE_INSET;
           savedBottomThermometerNode = this.thermometersNode[ thermometerType.name ].getBottom();
         } else {
           this.thermometersNode[ thermometerType.name ].setBottom( savedBottomThermometerNode );
+        }
+        // x pos
+        if ( !savedRightThermometerNodeRight ) {
+          this.thermometersNode[ thermometerType.name ].centerX = centerX;
+          savedRightThermometerNodeRight = this.thermometersNode[ thermometerType.name ].getRight();
+        } else {
+          this.thermometersNode[ thermometerType.name ].setRight( savedRightThermometerNodeRight );
         }
 
         // set visibility of combobox item
