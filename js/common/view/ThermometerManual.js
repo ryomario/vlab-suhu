@@ -184,6 +184,10 @@ class ThermometerManual extends ThermometerNode {
         assert && assert( temperature >= options.minTemperature &&
         temperature <= options.maxTemperature,
         'temperature has exceeded thermometer bounds' );
+
+        temperature = temperature < options.minTemperature ? options.minTemperature : temperature;
+        temperature = temperature > options.maxTemperature ? options.maxTemperature : temperature;
+        
         this.triangleNode.left = options.tubeWidth / 2;
         this.triangleNode.centerY = -this.temperatureToYPos( temperature );
     }
