@@ -29,7 +29,15 @@ class Thermometer {
     }
 
     get middlePoint() {
-        return this.lowerPoint + ( ( this.upperPoint - this.lowerPoint ) / 2 );
+        return this.lowerPoint + this.halfRange;
+    }
+    
+    get range() {
+        return this.upperPoint - this.lowerPoint;
+    }
+    
+    get halfRange() {
+        return this.range / 2;
     }
 
     /**

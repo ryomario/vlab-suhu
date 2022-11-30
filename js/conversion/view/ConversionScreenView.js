@@ -128,6 +128,8 @@ class ConversionScreenView extends ScreenView {
         model.thermometersTemperatureProperty[ thermometerType.name ],
         thermometerType,
         {
+          minTemperature: Math.round( ( thermometerType.lowerPoint - Math.round( 5 + Math.random() * thermometerType.halfRange ) ) / 5 ) * 5, // multiples of 5, min -5
+          maxTemperature: Math.round( ( thermometerType.upperPoint + Math.round( 5 + Math.random() * thermometerType.halfRange ) ) / 5 ) * 5, // multiples of 5, min +5
           showLabelValue: true,
           labelColor: '#038',
           tandem: options.tandem.createTandem( thermometerType.name + 'Node' )
