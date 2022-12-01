@@ -42,6 +42,17 @@ type StringsType = {
 
   'clear': string;
   'clearStringProperty': LinkableProperty<string>;
+  
+  'symbol': {
+    'celcius': string;
+    'celciusStringProperty': LinkableProperty<string>;
+    'fahrenheit': string;
+    'fahrenheitStringProperty': LinkableProperty<string>;
+    'reamur': string;
+    'reamurStringProperty': LinkableProperty<string>;
+    'kelvin': string;
+    'kelvinStringProperty': LinkableProperty<string>;
+  };
 };
 
 const LabSuhuStrings = getStringModule( 'LAB_SUHU' ) as StringsType;

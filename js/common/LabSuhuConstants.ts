@@ -149,6 +149,10 @@ const LabSuhuConstants = {
   // screen, so these were empirically determined to visually match on both screens
   INTRO_SCREEN_ENERGY_CHUNK_MAX_TRAVEL_HEIGHT: 0.85,
   SYSTEMS_SCREEN_ENERGY_CHUNK_MAX_TRAVEL_HEIGHT: 0.55,
+
+  // Equation node
+  EQUATION_FONT_SIZE: 34,
+  EQUATION_FONT_WEIGHT: 'bold',
 };
 
 labSuhu.register( 'LabSuhuConstants', LabSuhuConstants );

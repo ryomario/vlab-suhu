@@ -43,5 +43,17 @@
   },
   "clear": {
     "value": "Clear"
+  },
+  "symbol.celcius": {
+    "value": "C"
+  },
+  "symbol.fahrenheit": {
+    "value": "F"
+  },
+  "symbol.kelvin": {
+    "value": "K"
+  },
+  "symbol.reamur": {
+    "value": "R"
   }
 }

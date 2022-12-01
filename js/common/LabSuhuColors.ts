@@ -33,6 +33,10 @@ const LabSuhuColors = {
   CONTROL_PANEL_BACKGROUND_COLOR: new Color( 190, 220, 255 ),
   CONTROL_PANEL_OUTLINE_STROKE: new Color( 120, 120, 120 ),
   TEMPERATURE_SENSOR_INACTIVE_COLOR: new Color( 'white' ),
+
+  // Equation node colors
+  THERMOMETER_INITIAL: "blue",
+  THERMOMETER_FINAL: "red",
 };
 
 labSuhu.register( 'LabSuhuColors', LabSuhuColors );

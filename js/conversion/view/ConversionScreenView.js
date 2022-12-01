@@ -17,11 +17,13 @@ import ConversionModel from '../model/ConversionModel.js';
 import SkyNode from '../../../../energy-forms-and-changes/js/common/view/SkyNode.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import ThermometerManual from '../../common/view/ThermometerManual.js';
-import { Color, Node, Text } from '../../../../scenery/js/imports.js';
+import { Color, Node, Rectangle, Text } from '../../../../scenery/js/imports.js';
 import Thermometer from '../../scale/model/Thermometer.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import LabSuhuColors from '../../common/LabSuhuColors.js';
+import EquationPanel from './EquationPanel.js';
+import SuhuEquationNode from './SuhuEquationNode.js';
 
 // CONSTANTS
 
@@ -59,6 +61,27 @@ class ConversionScreenView extends ScreenView {
       // ),
       ( this.layoutBounds.width - 2 * LabSuhuConstants.SCREEN_VIEW_X_MARGIN ) / ConversionModel.SCREEN_WIDTH
     );
+
+    // right box
+    const boxWidth = this.layoutBounds.width / 3;
+    const equationPanel = new EquationPanel( 
+      new Text( 'Persamaan', { fontSize: 24, tandem: options.tandem.createTandem( 'equationPanelTitleNode' ) } ),
+      new SuhuEquationNode( { tandem: options.tandem.createTandem( 'equationPanelContentNode' ) } ),
+      {
+        cornerRadius: 10,
+        minWidth: boxWidth,
+        maxWidth: boxWidth,
+        // minHeight: boxWidth,
+        maxHeight: this.layoutBounds.height - 2 * EDGE_INSET,
+        centerX: modelViewTransform.modelToViewX( model.boxXPosition ),
+        centerY: this.layoutBounds.height / 2,
+
+        fill: LabSuhuColors.CONTROL_PANEL_BACKGROUND_COLOR,
+        stroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE
+      } 
+    );
+
+    this.addChild( equationPanel );
 
     const thermometerLeftNode = new Node( {
       visibleProperty: model.thermometerLeftVisibilityProperty,

@@ -1,6 +1,7 @@
 // Copyright 2022, University of Colorado Boulder
 
 import LabSuhuConstants from "../../common/LabSuhuConstants.js";
+import LabSuhuSymbols from "../../common/LabSuhuSymbols.js";
 import labSuhu from "../../labSuhu.js";
 import LabSuhuStrings from "../../LabSuhuStrings.js";
 
@@ -18,14 +19,17 @@ class Thermometer {
      * @param {string} letter The short name from the thermometer name 
      * @param {number} lowerPoint The lower fixed point of the thermometer
      * @param {number} upperPoint The upper fixed point of the thermometer
+     * @param {string} symbol Symbol
      */
-    constructor( name, units, title, letter, lowerPoint, upperPoint ) {
+    constructor( name, units, title, letter, lowerPoint, upperPoint, symbol, skala ) {
         this.name = name;
         this.units = units;
         this.title = title;
         this.letter = letter;
         this.lowerPoint = lowerPoint;
         this.upperPoint = upperPoint;
+        this.symbol = symbol;
+        this.skala = skala;
     }
 
     get middlePoint() {
@@ -82,7 +86,9 @@ Thermometer.CELCIUS = new Thermometer(
     LabSuhuStrings.celciusName, 
     LabSuhuStrings.celciusLetter, 
     LabSuhuConstants.CELCIUS.WATER_FREEZING_POINT_TEMPERATURE,
-    LabSuhuConstants.CELCIUS.WATER_BOILING_POINT_TEMPERATURE
+    LabSuhuConstants.CELCIUS.WATER_BOILING_POINT_TEMPERATURE,
+    LabSuhuSymbols.c,
+    5
 );
 Thermometer.FAHRENHEIT = new Thermometer( 
     'fahrenheit',
@@ -90,7 +96,9 @@ Thermometer.FAHRENHEIT = new Thermometer(
     LabSuhuStrings.fahrenheitName, 
     LabSuhuStrings.fahrenheitLetter, 
     LabSuhuConstants.FAHRENHEIT.WATER_FREEZING_POINT_TEMPERATURE,
-    LabSuhuConstants.FAHRENHEIT.WATER_BOILING_POINT_TEMPERATURE
+    LabSuhuConstants.FAHRENHEIT.WATER_BOILING_POINT_TEMPERATURE,
+    LabSuhuSymbols.f,
+    9
 );
 Thermometer.REAMUR = new Thermometer( 
     'reamur',
@@ -98,7 +106,9 @@ Thermometer.REAMUR = new Thermometer(
     LabSuhuStrings.reamurName, 
     LabSuhuStrings.reamurLetter, 
     LabSuhuConstants.REAMUR.WATER_FREEZING_POINT_TEMPERATURE,
-    LabSuhuConstants.REAMUR.WATER_BOILING_POINT_TEMPERATURE
+    LabSuhuConstants.REAMUR.WATER_BOILING_POINT_TEMPERATURE,
+    LabSuhuSymbols.r,
+    4
 );
 Thermometer.KELVIN = new Thermometer( 
     'kelvin',
@@ -106,16 +116,11 @@ Thermometer.KELVIN = new Thermometer(
     LabSuhuStrings.kelvinName, 
     LabSuhuStrings.kelvinLetter, 
     LabSuhuConstants.KELVIN.WATER_FREEZING_POINT_TEMPERATURE,
-    LabSuhuConstants.KELVIN.WATER_BOILING_POINT_TEMPERATURE
+    LabSuhuConstants.KELVIN.WATER_BOILING_POINT_TEMPERATURE,
+    LabSuhuSymbols.k,
+    5
 );
-Thermometer.NONE = new Thermometer(
-    'none',
-    '',
-    '',
-    '',
-    0,
-    0
-);
+Thermometer.NONE = new Thermometer( 'none' );
 
 Thermometer.TYPES = [
     Thermometer.CELCIUS,
