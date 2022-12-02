@@ -139,6 +139,23 @@ class SuhuEquationNode extends Node {
                 fill: LabSuhuColors.THERMOMETER_FINAL,
             }
         );
+        // Suhu akhir =
+        const finalSymbolNode2 = new RichText(
+            new DerivedProperty( [ this.thermometerFinalProperty ], thermometerType => thermometerType.symbol || UNKNOWN_STR ),
+            {
+                font: interactiveFont,
+                fill: LabSuhuColors.THERMOMETER_FINAL,
+            }
+        );
+        const equalNode2 = new Text( MathSymbols.EQUAL_TO, staticOptions );
+        // suhu akhir
+        const temperatureFinalNode = new RichText(
+            new DerivedProperty( [ this.temperatureFinalProperty ], temperature => temperature !== null ? Utils.toFixedNumber( temperature, 2 ).toString() : UNKNOWN_STR ),
+            {
+                font: interactiveFont,
+                fill: LabSuhuColors.THERMOMETER_FINAL,
+            }
+        );
 
         // rendering order
         const parentNode = new Node();
@@ -170,6 +187,12 @@ class SuhuEquationNode extends Node {
         parentNode.addChild( plusNode );
         // lowerPoint termometer akhir
         parentNode.addChild( lowerPointFinalNode );
+
+        // Suhu akhir =
+        parentNode.addChild( finalSymbolNode2 );
+        parentNode.addChild( equalNode2 );
+        // suhu akhir
+        parentNode.addChild( temperatureFinalNode );
 
         // layout
 
@@ -227,6 +250,14 @@ class SuhuEquationNode extends Node {
         lastNode.left = lowerPointFinalNode.left + numbersWidth;
         parentNode.addChild( lastNode );
 
+        // Suhu akhir = 
+        finalSymbolNode2.left = 0;
+        finalSymbolNode2.top = skalaInitialNode.bottom + 2 * this.pickersYSpacing;
+        equalNode2.left = finalSymbolNode2.right + this.relationalOperatorXSpacing;
+        equalNode2.centerY = finalSymbolNode2.centerY;
+        // suhu akhir
+        temperatureFinalNode.left = equalNode2.right + this.relationalOperatorXSpacing;
+        temperatureFinalNode.centerY = equalNode2.centerY;
 
         this.mutate( options );
 
