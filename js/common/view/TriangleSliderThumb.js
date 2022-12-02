@@ -7,12 +7,13 @@
  * @author Arnab Purkayastha
  */
 
- import Dimension2 from '../../../../dot/js/Dimension2.js';
+ import Property from '../../../../axon/js/Property.js';
+import Dimension2 from '../../../../dot/js/Dimension2.js';
  import { Shape } from '../../../../kite/js/imports.js';
  import merge from '../../../../phet-core/js/merge.js';
  import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
  import TriangleNode from '../../../../scenery-phet/js/TriangleNode.js';
- import { ButtonListener, Node, Path } from '../../../../scenery/js/imports.js';
+ import { ButtonListener, Color, Node, Path } from '../../../../scenery/js/imports.js';
  import Tandem from '../../../../tandem/js/Tandem.js';
 import labSuhu from '../../labSuhu.js';
 import LabSuhuColors from '../LabSuhuColors.js';
@@ -25,12 +26,15 @@ import LabSuhuColors from '../LabSuhuColors.js';
     * @param {Object} [options]
     */
    constructor( options ) {
+
+    const fillColor = new Color( 50, 145, 184 );
  
      options = merge( {
        size: new Dimension2( 30, 15 ),
        stroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE,
-       fill: 'rgb( 50, 145, 184 )',
-       fillHighlighted: 'rgb( 71, 207, 255 )',
+       fill: fillColor,
+      //  fillHighlighted: 'rgb( 71, 207, 255 )',
+      //  fillHighlighted: fillColor.brighterColor( 0.9 ),
        dashedLineOptions: {
          stroke: LabSuhuColors.CONTROL_PANEL_OUTLINE_STROKE,
          lineDash: [ 3, 3 ]
@@ -67,14 +71,24 @@ import LabSuhuColors from '../LabSuhuColors.js';
  
      triangle.centerX = this.centerX;
      triangle.top = -triangleHalfWidth;
+     this.baseColorProperty = new Property( new Color( options.fill ) );
+     const colors = {
+      fill: this.baseColorProperty.value,
+      fillHighlighted: this.baseColorProperty.value.colorUtilsBrighter( 0.25 ),
+     };
+     this.baseColorProperty.link( color => {
+      colors.fill = color;
+      colors.fillHighlighted = color.colorUtilsBrighter( 0.25 );
+      triangle.fill = color;
+     } );
      dashedLinesPath.centerX = this.centerX;
      // Highlight thumb on pointer over and remove arrows on first click
      this.addInputListener( new ButtonListener( {
        over: () => {
-         triangle.fill = options.fillHighlighted;
+         triangle.fill = colors.fillHighlighted;
        },
        up: () => {
-         triangle.fill = options.fill;
+         triangle.fill = colors.fill;
        },
        down: () => {
          cueingArrows.visible = false;
@@ -93,6 +107,9 @@ import LabSuhuColors from '../LabSuhuColors.js';
      this.cueingArrows.visible = true;
    }
  
+   setBaseColor( color ) {
+    this.baseColorProperty.value = color;
+   }
  }
  
  labSuhu.register( 'TriangleSliderThumb', TriangleSliderThumb );

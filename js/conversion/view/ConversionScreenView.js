@@ -185,6 +185,7 @@ class ConversionScreenView extends ScreenView {
       if ( thermometerType !== Thermometer.NONE ) {
         model.thermometersTemperatureProperty[ thermometerType.name ].link( equationNode.temperatureInitialChangeListener );
 
+        this.thermometersNode[ thermometerType.name ].updateBaseColor( LabSuhuColors.THERMOMETER_INITIAL );
         this.thermometersNode[ thermometerType.name ].visible = true;
         thermometerLeftNode.addChild( this.thermometersNode[ thermometerType.name ] );
 
@@ -241,6 +242,7 @@ class ConversionScreenView extends ScreenView {
       if ( thermometerType !== Thermometer.NONE ) {
         model.thermometersTemperatureProperty[ thermometerType.name ].link( equationNode.temperatureFinalChangeListener );
 
+        this.thermometersNode[ thermometerType.name ].updateBaseColor( LabSuhuColors.THERMOMETER_FINAL );
         this.thermometersNode[ thermometerType.name ].visible = true;
         thermometerRightNode.addChild( this.thermometersNode[ thermometerType.name ] );
 

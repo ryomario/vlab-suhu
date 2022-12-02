@@ -13,7 +13,7 @@ import Shape from "../../../../kite/js/Shape.js";
 import merge from "../../../../phet-core/js/merge.js";
 import PhetFont from "../../../../scenery-phet/js/PhetFont.js";
 import ThermometerNode from "../../../../scenery-phet/js/ThermometerNode.js";
-import { DragListener, Node, Path, Text } from "../../../../scenery/js/imports.js";
+import { Color, DragListener, Node, Path, Text } from "../../../../scenery/js/imports.js";
 import Tandem from "../../../../tandem/js/Tandem.js";
 import labSuhu from "../../labSuhu.js";
 import Thermometer from "../../scale/model/Thermometer.js";
@@ -74,7 +74,7 @@ class ThermometerManual extends ThermometerNode {
         } );
 
         // label value
-        const labelValueText = new Text(
+        this.labelValueText = new Text(
             new DerivedProperty( [ temperatureProperty ], temperature => Utils.toFixedNumber( temperature, 2 ).toString() ),
             {
                 font: options.labelFont,
@@ -97,7 +97,7 @@ class ThermometerManual extends ThermometerNode {
             this.updateThumb( temperature, options );
 
             // update position labelValueText
-            labelValueText.setCenterTop(
+            this.labelValueText.setCenterTop(
                 labelValueCenterTop
             );
         } );
@@ -129,7 +129,7 @@ class ThermometerManual extends ThermometerNode {
         this.addChild( tickContainer );
         this.addChild( this.triangleNode );
         if ( options.showLabelValue ) {
-            this.addChild( labelValueText );
+            this.addChild( this.labelValueText );
         }
 
         // @private position of the center of the thermometer (not the whole node) relative to the right of the node
@@ -198,6 +198,11 @@ class ThermometerManual extends ThermometerNode {
      * @public
      */
     get thermometerCenterXFromRight() { return this._thermometerCenterXFromRight; }
+
+    updateBaseColor( color ) {
+        this.labelValueText.setFill( color );
+        this.triangleNode.setBaseColor( new Color( color ).colorUtilsBrighter( 0.2 ) );
+    }
 }
 
 labSuhu.register( 'ThermometerManual', ThermometerManual );
