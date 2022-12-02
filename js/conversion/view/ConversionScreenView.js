@@ -232,6 +232,7 @@ class ConversionScreenView extends ScreenView {
 
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
         model.thermometersTemperatureProperty[ oldThermometerType.name ].unlink( equationNode.temperatureFinalChangeListener );
+        equationNode.temperatureFinalProperty.value = null;
 
         thermometerRightNode.removeChild( this.thermometersNode[ oldThermometerType.name ] );
         this.thermometersNode[ oldThermometerType.name ].visible = false;
