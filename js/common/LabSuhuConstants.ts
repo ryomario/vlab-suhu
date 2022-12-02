@@ -151,7 +151,7 @@ const LabSuhuConstants = {
   SYSTEMS_SCREEN_ENERGY_CHUNK_MAX_TRAVEL_HEIGHT: 0.55,
 
   // Equation node
-  EQUATION_FONT_SIZE: 34,
+  EQUATION_FONT_SIZE: 26,
   EQUATION_FONT_WEIGHT: 'bold',
 };
 

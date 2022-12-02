@@ -63,10 +63,13 @@ class ConversionScreenView extends ScreenView {
     );
 
     // right box
-    const boxWidth = this.layoutBounds.width / 3;
+    const boxWidth = this.layoutBounds.width / 2 - 2 * EDGE_INSET;
+
+    const equationNode = new SuhuEquationNode( { tandem: options.tandem.createTandem( 'equationPanelContentNode' ) } );
+
     const equationPanel = new EquationPanel( 
       new Text( 'Persamaan', { fontSize: 24, tandem: options.tandem.createTandem( 'equationPanelTitleNode' ) } ),
-      new SuhuEquationNode( { tandem: options.tandem.createTandem( 'equationPanelContentNode' ) } ),
+      equationNode,
       {
         cornerRadius: 10,
         minWidth: boxWidth,
@@ -166,7 +169,13 @@ class ConversionScreenView extends ScreenView {
     let savedRightThermometerNodeRight;
     
     model.thermometerTypeLeftProperty.link( ( thermometerType, oldThermometerType ) => {
+
+      equationNode.thermometerInitialProperty.value = thermometerType;
+
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
+        model.thermometersTemperatureProperty[ oldThermometerType.name ].unlink( equationNode.temperatureInitialChangeListener );
+        equationNode.temperatureInitialProperty.value = null;
+
         thermometerLeftNode.removeChild( this.thermometersNode[ oldThermometerType.name ] );
         this.thermometersNode[ oldThermometerType.name ].visible = false;
 
@@ -174,6 +183,8 @@ class ConversionScreenView extends ScreenView {
         comboBoxThermometerRight.setItemVisible( oldThermometerType, true);
       }
       if ( thermometerType !== Thermometer.NONE ) {
+        model.thermometersTemperatureProperty[ thermometerType.name ].link( equationNode.temperatureInitialChangeListener );
+
         this.thermometersNode[ thermometerType.name ].visible = true;
         thermometerLeftNode.addChild( this.thermometersNode[ thermometerType.name ] );
 
@@ -215,7 +226,12 @@ class ConversionScreenView extends ScreenView {
       }
     } );
     model.thermometerTypeRightProperty.link( ( thermometerType, oldThermometerType ) => {
+
+      equationNode.thermometerFinalProperty.value = thermometerType;
+
       if ( oldThermometerType && oldThermometerType !== Thermometer.NONE ) {
+        model.thermometersTemperatureProperty[ oldThermometerType.name ].unlink( equationNode.temperatureFinalChangeListener );
+
         thermometerRightNode.removeChild( this.thermometersNode[ oldThermometerType.name ] );
         this.thermometersNode[ oldThermometerType.name ].visible = false;
 
@@ -223,6 +239,8 @@ class ConversionScreenView extends ScreenView {
         comboBoxThermometerLeft.setItemVisible( oldThermometerType, true);
       }
       if ( thermometerType !== Thermometer.NONE ) {
+        model.thermometersTemperatureProperty[ thermometerType.name ].link( equationNode.temperatureFinalChangeListener );
+
         this.thermometersNode[ thermometerType.name ].visible = true;
         thermometerRightNode.addChild( this.thermometersNode[ thermometerType.name ] );
 

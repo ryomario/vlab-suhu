@@ -39,6 +39,8 @@ class SuhuEquationNode extends Node {
 
         super();
 
+        // const NUMBER_MAX_WIDTH = 
+
 
         this.relationalOperatorXSpacing = 0.35 * options.fontSize;
         this.pickersYSpacing = 0.2 * options.fontSize;
@@ -173,7 +175,7 @@ class SuhuEquationNode extends Node {
         finalSymbolNode.x = 0;
         finalSymbolNode.y = 0;
         equalNode.left = finalSymbolNode.right + this.relationalOperatorXSpacing;
-        equalNode.y = finalSymbolNode.y;
+        equalNode.centerY = finalSymbolNode.centerY;
         // ( perbandingan termometer akhir / awal )
         // fraction line
         interactiveFractionLineNode.left = equalNode.right + this.relationalOperatorXSpacing;
@@ -197,13 +199,13 @@ class SuhuEquationNode extends Node {
         temperatureInitialNode.left = bracket1Node.right + this.relationalOperatorXSpacing;
         temperatureInitialNode.centerY = bracket1Node.centerY;
         // -
-        minusNode.left = temperatureInitialNode.right + this.relationalOperatorXSpacing;
+        minusNode.left = ( temperatureInitialNode.right + options.fontSize * 2 ) + this.relationalOperatorXSpacing;
         minusNode.centerY = temperatureInitialNode.centerY;
         // lowerPoint termometer awal
         lowerPointInitialNode.left = minusNode.right + this.relationalOperatorXSpacing;
         lowerPointInitialNode.centerY = minusNode.centerY;
         // )
-        bracket2Node.left = lowerPointInitialNode.right + this.relationalOperatorXSpacing;
+        bracket2Node.left = ( lowerPointInitialNode.right + options.fontSize * 5 ) + this.relationalOperatorXSpacing;
         bracket2Node.centerY = lowerPointInitialNode.centerY;
         // +
         plusNode.left = bracket2Node.right + this.relationalOperatorXSpacing;
@@ -211,18 +213,32 @@ class SuhuEquationNode extends Node {
         // lowerPoint termometer akhir
         lowerPointFinalNode.left = plusNode.right + this.relationalOperatorXSpacing;
         lowerPointFinalNode.centerY = plusNode.centerY;
+        // lowerPointFinalNode.width = 
+        const lastNode = new Text( '' );
+        lastNode.left = lowerPointFinalNode.right + options.fontSize * 5;
+        parentNode.addChild( lastNode );
 
 
         this.mutate( options );
+
+        const temperatureInitialChangeListener = ( temperature ) => {
+            this.temperatureInitialProperty.value = temperature;
+        };
+        this.temperatureInitialChangeListener = temperatureInitialChangeListener.bind( this );
+
+        const temperatureFinalChangeListener = ( temperature ) => {
+            this.temperatureFinalProperty.value = temperature;
+        };
+        this.temperatureFinalChangeListener = temperatureFinalChangeListener.bind( this );
     }
 
 
-    temperatureInitialChangeListener( temperature ) {
-        this.temperatureInitialProperty.value = temperature;
-    }
-    temperatureFinalChangeListener( temperature ) {
-        this.temperatureFinalProperty.value = temperature;
-    }
+    // temperatureInitialChangeListener( temperature ) {
+    //     this.temperatureInitialProperty.value = temperature;
+    // }
+    // temperatureFinalChangeListener( temperature ) {
+    //     this.temperatureFinalProperty.value = temperature;
+    // }
 }
 
 labSuhu.register( 'SuhuEquationNode', SuhuEquationNode );
