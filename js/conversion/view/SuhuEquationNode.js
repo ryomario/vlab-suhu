@@ -8,6 +8,7 @@
 
 import DerivedProperty from "../../../../axon/js/DerivedProperty.js";
 import Property from "../../../../axon/js/Property.js";
+import Utils from "../../../../dot/js/Utils.js";
 import merge from "../../../../phet-core/js/merge.js";
 import MathSymbols from "../../../../scenery-phet/js/MathSymbols.js";
 import PhetFont from "../../../../scenery-phet/js/PhetFont.js";
@@ -108,7 +109,7 @@ class SuhuEquationNode extends Node {
         const bracket1Node = new Text( '(', staticOptions );
         // suhu awal
         const temperatureInitialNode = new RichText(
-            new DerivedProperty( [ this.temperatureInitialProperty ], temperature => temperature?.toFixed( 0 ) || UNKNOWN_STR ),
+            new DerivedProperty( [ this.temperatureInitialProperty ], temperature => temperature !== null ? Utils.toFixedNumber( temperature, 2 ).toString() : UNKNOWN_STR ),
             {
                 font: interactiveFont,
                 fill: LabSuhuColors.THERMOMETER_INITIAL,
@@ -171,6 +172,14 @@ class SuhuEquationNode extends Node {
         parentNode.addChild( lowerPointFinalNode );
 
         // layout
+
+        // for get number width
+        const numbersWidth = new RichText( '888888',
+            {
+                font: interactiveFont,
+            }
+        ).width;
+
         // Suhu akhir = 
         finalSymbolNode.x = 0;
         finalSymbolNode.y = 0;
@@ -199,13 +208,13 @@ class SuhuEquationNode extends Node {
         temperatureInitialNode.left = bracket1Node.right + this.relationalOperatorXSpacing;
         temperatureInitialNode.centerY = bracket1Node.centerY;
         // -
-        minusNode.left = ( temperatureInitialNode.right + options.fontSize * 2 ) + this.relationalOperatorXSpacing;
+        minusNode.left = ( temperatureInitialNode.left + numbersWidth ) + this.relationalOperatorXSpacing;
         minusNode.centerY = temperatureInitialNode.centerY;
         // lowerPoint termometer awal
         lowerPointInitialNode.left = minusNode.right + this.relationalOperatorXSpacing;
         lowerPointInitialNode.centerY = minusNode.centerY;
         // )
-        bracket2Node.left = ( lowerPointInitialNode.right + options.fontSize * 5 ) + this.relationalOperatorXSpacing;
+        bracket2Node.left = ( lowerPointInitialNode.left + numbersWidth ) + this.relationalOperatorXSpacing;
         bracket2Node.centerY = lowerPointInitialNode.centerY;
         // +
         plusNode.left = bracket2Node.right + this.relationalOperatorXSpacing;
@@ -215,7 +224,7 @@ class SuhuEquationNode extends Node {
         lowerPointFinalNode.centerY = plusNode.centerY;
         // lowerPointFinalNode.width = 
         const lastNode = new Text( '' );
-        lastNode.left = lowerPointFinalNode.right + options.fontSize * 5;
+        lastNode.left = lowerPointFinalNode.left + numbersWidth;
         parentNode.addChild( lastNode );
 
 
