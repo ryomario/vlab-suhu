@@ -15,7 +15,7 @@ const SIM_TIME_PER_TICK_NORMAL = 1 / FRAMES_PER_SECOND;
 
 // physical temperature constants
 const ROOM_TEMPERATURE = 296; // in degrees Kelvin
-const WATER_FREEZING_POINT_TEMPERATURE = 273.15; // in degrees Kelvin
+const WATER_FREEZING_POINT_TEMPERATURE = 273; // in degrees Kelvin
 
 // constants that define physical parameters of various rectangular objects.
 const BRICK_DENSITY = 3300; // in kg/m^3, source = design document plus some tweaking to keep chunk numbers reasonable
@@ -58,7 +58,7 @@ const LabSuhuConstants = {
     WATER_BOILING_POINT_TEMPERATURE: 100,
     ROOM_TEMPERATURE: 22.85,
     convertFromKelvin: ( temperature: number ): number => {
-      return temperature - 273.15;
+      return temperature - 273;
     },
     convertFromReamur: ( temperature: number ): number => {
       return temperature * 5 / 4;
@@ -75,7 +75,7 @@ const LabSuhuConstants = {
     WATER_BOILING_POINT_TEMPERATURE: 212,
     ROOM_TEMPERATURE: 73.13,
     convertFromKelvin: ( temperature: number ): number => {
-      return ( temperature - 273.15 ) * 9 / 5 + 32;
+      return ( temperature - 273 ) * 9 / 5 + 32;
     },
     convertFromReamur: ( temperature: number ): number => {
       return ( temperature * 9 / 4 ) + 32;
@@ -92,7 +92,7 @@ const LabSuhuConstants = {
     WATER_BOILING_POINT_TEMPERATURE: 80,
     ROOM_TEMPERATURE: 18.28,
     convertFromKelvin: ( temperature: number ): number => {
-      return ( temperature - 273.15 ) * 4 / 5;
+      return ( temperature - 273 ) * 4 / 5;
     },
     convertFromReamur: ( temperature: number ): number => {
       return temperature;
@@ -105,20 +105,20 @@ const LabSuhuConstants = {
     },
   },
   KELVIN: {
-    WATER_FREEZING_POINT_TEMPERATURE: 273.15,
-    WATER_BOILING_POINT_TEMPERATURE: 373.15,
+    WATER_FREEZING_POINT_TEMPERATURE: 273,
+    WATER_BOILING_POINT_TEMPERATURE: 373,
     ROOM_TEMPERATURE: ROOM_TEMPERATURE,
     convertFromKelvin: ( temperature: number ): number => {
       return temperature;
     },
     convertFromReamur: ( temperature: number ): number => {
-      return ( temperature * 5 / 4 ) + 273.15;
+      return ( temperature * 5 / 4 ) + 273;
     },
     convertFromFahrenheit: ( temperature: number ): number => {
-      return ( temperature - 32 ) * 5 / 9 + 273.15;
+      return ( temperature - 32 ) * 5 / 9 + 273;
     },
     convertFromCelcius: ( temperature: number ): number => {
-      return temperature + 273.15;
+      return temperature + 273;
     },
   },
 

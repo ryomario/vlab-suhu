@@ -202,6 +202,12 @@ class SuhuEquationNode extends Node {
                 font: interactiveFont,
             }
         ).width;
+        // for get number width
+        const numbersFixedWidth = new RichText( '888',
+            {
+                font: interactiveFont,
+            }
+        ).width;
 
         // Suhu akhir = 
         finalSymbolNode.x = 0;
@@ -237,7 +243,7 @@ class SuhuEquationNode extends Node {
         lowerPointInitialNode.left = minusNode.right + this.relationalOperatorXSpacing;
         lowerPointInitialNode.centerY = minusNode.centerY;
         // )
-        bracket2Node.left = ( lowerPointInitialNode.left + numbersWidth ) + this.relationalOperatorXSpacing;
+        bracket2Node.left = ( lowerPointInitialNode.left + numbersFixedWidth ) + this.relationalOperatorXSpacing;
         bracket2Node.centerY = lowerPointInitialNode.centerY;
         // +
         plusNode.left = bracket2Node.right + this.relationalOperatorXSpacing;
@@ -247,7 +253,7 @@ class SuhuEquationNode extends Node {
         lowerPointFinalNode.centerY = plusNode.centerY;
         // lowerPointFinalNode.width = 
         const lastNode = new Text( '' );
-        lastNode.left = lowerPointFinalNode.left + numbersWidth;
+        lastNode.left = lowerPointFinalNode.left + numbersFixedWidth;
         parentNode.addChild( lastNode );
 
         // Suhu akhir = 
