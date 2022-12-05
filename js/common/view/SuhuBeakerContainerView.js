@@ -10,6 +10,7 @@ import Matrix3 from '../../../../dot/js/Matrix3.js';
 import Transform3 from '../../../../dot/js/Transform3.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import BeakerContainerView from '../../../../energy-forms-and-changes/js/intro/view/BeakerContainerView.js';
+import merge from '../../../../phet-core/js/merge.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { RichText, Text } from '../../../../scenery/js/imports.js';
 import labSuhu from '../../labSuhu.js';
@@ -33,6 +34,10 @@ class SuhuBeakerContainerView extends BeakerContainerView {
     constructor( beaker, model, modelViewTransform, constrainPosition, options ) {
         super( beaker, model, modelViewTransform, constrainPosition, options );
 
+        options = merge( {
+            showVolumeLabel: true,
+        }, options );
+
         // extract the scale transform from the MVT so that we can separate the shape from the position
         const scaleTransform = new Transform3(
             Matrix3.scaling( modelViewTransform.matrix.m00(), modelViewTransform.matrix.m11() )
@@ -40,30 +45,32 @@ class SuhuBeakerContainerView extends BeakerContainerView {
         // get a Bounds2 object defining the beaker size and position in the view
         const beakerBounds = scaleTransform.transformShape( beaker.getUntransformedBounds() );
 
-        // meters^3 to mililiters
-        const fluidVolumeToText = ( volume ) => {
-            const volumeLiter = volume * M_TO_MILILITER_MULTIPLIER;
+        if ( options.showVolumeLabel ) {
+            // meters^3 to mililiters
+            const fluidVolumeToText = ( volume ) => {
+                const volumeLiter = volume * M_TO_MILILITER_MULTIPLIER;
 
-            return volumeLiter.toFixed( 0 ) + ' ml';
+                return volumeLiter.toFixed( 0 ) + ' ml';
+            }
+
+            const labelTextVolume = new Text( fluidVolumeToText( beaker.fluidVolume.get() ), {
+                font: new PhetFont( 16 ),
+                maxWidth: beakerBounds.width * 0.7, // empirically determined to look nice
+                tandem: options.tandem.createTandem( 'labelTextVolume' ),
+                phetioVisiblePropertyInstrumented: true
+            } );
+            const ellipseHeight = beakerBounds.getWidth() * PERSPECTIVE_PROPORTION;
+
+            beaker.fluidVolume.link( volume => {
+                labelTextVolume.text = fluidVolumeToText( volume );
+            } );
+            labelTextVolume.translation = new Vector2(
+                beakerBounds.centerX - labelTextVolume.bounds.width / 2,
+                beakerBounds.maxY - beakerBounds.height * beaker.fluidProportionProperty.get() + ellipseHeight * 1.1 + new Text( '', { font: LABEL_TEXT_FONT } ).getHeight()
+            );
+            labelTextVolume.pickable = false;
+            this.frontNode.addChild( labelTextVolume );
         }
-
-        const labelTextVolume = new Text( fluidVolumeToText( beaker.fluidVolume.get() ), {
-            font: new PhetFont( 16 ),
-            maxWidth: beakerBounds.width * 0.7, // empirically determined to look nice
-            tandem: options.tandem.createTandem( 'labelTextVolume' ),
-            phetioVisiblePropertyInstrumented: true
-        } );
-        const ellipseHeight = beakerBounds.getWidth() * PERSPECTIVE_PROPORTION;
-
-        beaker.fluidVolume.link( volume => {
-            labelTextVolume.text = fluidVolumeToText( volume );
-        } );
-        labelTextVolume.translation = new Vector2(
-            beakerBounds.centerX - labelTextVolume.bounds.width / 2,
-            beakerBounds.maxY - beakerBounds.height * beaker.fluidProportionProperty.get() + ellipseHeight * 1.1 + new Text( '', { font: LABEL_TEXT_FONT } ).getHeight()
-        );
-        labelTextVolume.pickable = false;
-        this.frontNode.addChild( labelTextVolume );
     }
 }
 labSuhu.register( 'SuhuBeakerContainerView', SuhuBeakerContainerView );

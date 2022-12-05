@@ -39,7 +39,7 @@ import efacPositionConstrainer from '../../../../energy-forms-and-changes/js/int
 import PhetioGroup from '../../../../tandem/js/PhetioGroup.js';
 import BlockNode from '../../../../energy-forms-and-changes/js/intro/view/BlockNode.js';
 import BeakerType from '../../../../energy-forms-and-changes/js/common/model/BeakerType.js';
-import BeakerContainerView from '../../../../energy-forms-and-changes/js/intro/view/BeakerContainerView.js';
+import BeakerContainerView from '../../common/view/SuhuBeakerContainerView.js';
 import LabSuhuStrings from '../../LabSuhuStrings.js';
 import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
@@ -326,6 +326,7 @@ class IntroScreenView extends ScreenView {
         modelViewTransform,
         constrainMovableElementMotion, {
           label: label,
+          showVolumeLabel: false,
           tandem: tandem,
           phetioDynamicElement: true,
           phetioInputEnabledPropertyInstrumented: true
