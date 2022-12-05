@@ -100,6 +100,19 @@ class SuhuBeakerContainer extends BeakerContainer {
 
         this.temperatureProperty.set( this.getTemperature() );
     }
+
+    reset() {
+        this.resetInProgressProperty.set( true );
+        this.fluidProportionProperty.reset();
+        this.clearSupportingSurface();
+        this.userControlledProperty && this.userControlledProperty.reset();
+        this.verticalVelocityProperty.reset();
+        this.positionProperty.reset();
+        this.energyProperty.reset();
+        this.temperatureProperty.reset();
+
+        this.resetInProgressProperty.set( false );
+    }
 }
 
 labSuhu.register( 'SuhuBeakerContainer', SuhuBeakerContainer );
