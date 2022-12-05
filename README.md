@@ -2,15 +2,15 @@ Lab Suhu
 =============
 "Lab Suhu" is an educational simulation in HTML5, by <a href="https://phet.colorado.edu/" target="_blank">PhET Interactive Simulations</a>
 at the University of Colorado Boulder.
-For a description of this simulation, associated resources, and a link to the published version,
-<a href="https://phet.colorado.edu/en/simulation/lab-suhu" target="_blank">visit the simulation's web page</a>.
+<!-- For a description of this simulation, associated resources, and a link to the published version,
+<a href="https://phet.colorado.edu/en/simulation/lab-suhu" target="_blank">visit the simulation's web page</a>. -->
 
 ### Try it!
 
-<a href="https://phet.colorado.edu/sims/html/lab-suhu/latest/lab-suhu_en.html" target="_blank">Click here to run "Lab Suhu".</a>
+<a href="https://vlab.lms.stechoq.com/ipa/suhu/" target="_blank">Click here to run "Lab Suhu".</a>
 
-<a href="https://phet.colorado.edu/sims/html/lab-suhu/latest/lab-suhu_en.html" target="_blank">
-<img src="https://raw.githubusercontent.com/phetsims/lab-suhu/master/assets/lab-suhu-screenshot.png" alt="Screenshot" style="width: 400px;"/>
+<a href="https://vlab.lms.stechoq.com/ipa/suhu/" target="_blank">
+<img src="https://gitlab.com/mbkm/code-repositories/batch-3/pendidikan/ipa/simulasi/suhu-dan-kalor/-/raw/main/assets/lab-suhu-screenshot.png" alt="Screenshot" style="width: 400px;"/>
 </a>
 
 ### Documentation
@@ -43,6 +43,8 @@ git clone https://github.com/phetsims/tambo.git
 git clone https://github.com/phetsims/tandem.git
 git clone https://github.com/phetsims/twixt.git
 git clone https://github.com/phetsims/utterance-queue.git
+
+git clone https://github.com/phetsims/energy-forms-and-changes.git
 ```
 
 (2) Install dev dependencies:
@@ -75,7 +77,7 @@ which indicate that non-public PhET-iO code is not being included in the build.
 
 Contact us at our Google Group: <a href="http://groups.google.com/forum/#!forum/developing-interactive-simulations-in-html5" target="_blank">Developing Interactive Simulations in HTML5</a>
 
-Help us improve, create a <a href="http://github.com/phetsims/lab-suhu/issues/new" target="_blank">New Issue</a>
+Help us improve, create a <a href="https://gitlab.com/mbkm/code-repositories/batch-3/pendidikan/ipa/simulasi/suhu-dan-kalor/-/issues/new" target="_blank">New Issue</a>
 
 ### License
-See the <a href="https://github.com/phetsims/lab-suhu/blob/master/LICENSE" target="_blank">LICENSE</a>
+See the <a href="https://gitlab.com/mbkm/code-repositories/batch-3/pendidikan/ipa/simulasi/suhu-dan-kalor/-/raw/main/LICENSE" target="_blank">LICENSE</a>
