@@ -296,10 +296,10 @@ class IntroModel {
       // Show / hide descImage by thermometer activation
       thermometer.activeProperty.link( active => {
         // check if other thermometer is active
-        const isOtherActive = this.thermometers.some( thermo => thermo.activeProperty.get() );
+        // const isOtherActive = this.thermometers.some( thermo => thermo.activeProperty.get() );
         // show descImage if one or more thermometer active
         // hide descImage if no one thermometer activated
-        this.descVisibility.set( active || isOtherActive );
+        // this.descVisibility.set( active || isOtherActive );
       } );
 
       // Add handling for a special case where the user drops a block in the beaker behind this thermometer. The
@@ -983,6 +983,9 @@ class IntroModel {
       }
     }
 
+    // set descImage visibility by temperatureAndColorAndNameUpdated on elements above
+    this.descVisibility.set( temperatureAndColorAndNameUpdated );
+
     // test if the point is a burner
     // for ( let i = 0; i < this.burners.length && !temperatureAndColorAndNameUpdated; i++ ) {
     if ( !temperatureAndColorAndNameUpdated ) {
@@ -994,9 +997,6 @@ class IntroModel {
         temperatureAndColorAndNameUpdated = true;
       }
     }
-
-    // set descImage visibility by temperatureAndColorAndNameUpdated on elements above
-    // this.descVisibility.set( temperatureAndColorAndNameUpdated );
 
     if ( !temperatureAndColorAndNameUpdated ) {
 
