@@ -55,5 +55,17 @@
   },
   "symbol.reamur": {
     "value": "R"
+  },
+  "info.langkahTitle": {
+    "value": "Langkah-Langkah Praktikum"
+  },
+  "info.intro": {
+    "value": "Naikkan gelas kimia yang berisi air keatas tungku pemanas\nPanaskan gelas tersebut dengan menggeser tombol pemanas keatas\nKlik tombol play\nGunakan termometer untuk mengukur suhu air didalam gelas tersebut"
+  },
+  "info.scale": {
+    "value": "Masukkan termometer Celcius untuk mengukur suhu air, ukur suhu air sampai mendidih dan muncul nilai titik tetap atas termometer Celcius terhadap suhu air\nPilih termometer lainnya dan ulangi langkah sebelumnya\nSetelah titik tetap atas semua termometer muncul, ubah pemanas menjadi pendingin dengan menggeser tombol pemanas kebawah (cool)\nMasukkan termometer Celcius untuk mengukur suhu air, ukur suhu air sampai muncul nilai titik tetap bawah termometer Celcius terhadap suhu air\nPilih termometer lainnya dan ulangi langkah sebelumnya\nSetelah nilai titik tetap atas dan titik tetap bawah termometer muncul maka jarak skala untuk termometer akan muncul\nSetelah semua jarak(Range) skala semua termometer muncul, maka akan muncul perbandingan antara jarak skala semua termomter"
+  },
+  "info.conversion": {
+    "value": "Pilih salah satu jenis termometer sebagai satuan awal nilai suhu, saat termometer awal dipilih maka rumus dibagian kanan akan menampilkan konstanta yang berkaitan dengan termometer tersebut\nSelanjutnya, pilih jenis termometer kedua pada pilihan kedua. Setelah kedua jenis termometer dipilih maka rumus sudah terisi lengkap\nUntuk mengubah nilai suhu bisa dilakukan pada kedua termometer, urutan termometer tidak akan berubah untuk mempertahankan struktur rumus konversi"
   }
 }

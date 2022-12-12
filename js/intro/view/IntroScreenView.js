@@ -49,6 +49,8 @@ import Easing from '../../../../twixt/js/Easing.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import SkyNode from '../../../../energy-forms-and-changes/js/common/view/SkyNode.js';
 import merge from '../../../../phet-core/js/merge.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
+import IntroInfoDialog from './IntroInfoDialog.js';
 
 // CONSTANTS
 const unknownLiquidString = LabSuhuStrings.unknownLiquid;
@@ -648,6 +650,27 @@ class IntroScreenView extends ScreenView {
       // return the position as constrained by both the model and the view
       return viewConstrainedPosition;
     };
+
+
+    let energyDialog; // lazily created
+
+    const infoButton = new InfoButton( {
+      iconFill: 'rgb( 41, 106, 163 )',
+      maxHeight: resetAllButton.height,
+      left: EDGE_INSET,
+      centerY: resetAllButton.centerY,
+      listener: () => {
+        // Lazy creation.
+        if ( !energyDialog ) {
+          energyDialog = new IntroInfoDialog();
+        }
+        energyDialog.show();
+      },
+      touchAreaXDilation: 10,
+      touchAreaYDilation: 5
+    } );
+
+    this.addChild( infoButton );
   }
 
   /**

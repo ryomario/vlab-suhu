@@ -54,7 +54,7 @@ class TimeCounter extends Node {
         } );
 
         this.addChild( new VBox( {
-            align: 'left',
+            align: 'right',
             spacing: 4,
             children: [
                 timeText,

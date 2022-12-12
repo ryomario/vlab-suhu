@@ -24,6 +24,8 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import LabSuhuColors from '../../common/LabSuhuColors.js';
 import EquationPanel from './EquationPanel.js';
 import SuhuEquationNode from './SuhuEquationNode.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
+import ConversionInfoDialog from './ConversionInfoDialog.js';
 
 // CONSTANTS
 
@@ -309,6 +311,27 @@ class ConversionScreenView extends ScreenView {
       this.layoutBounds.height * -1.5
     );
     this.addChild( skyNode );
+
+
+    let energyDialog; // lazily created
+
+    const infoButton = new InfoButton( {
+      iconFill: 'rgb( 41, 106, 163 )',
+      maxHeight: resetAllButton.height,
+      left: EDGE_INSET,
+      centerY: resetAllButton.centerY,
+      listener: () => {
+        // Lazy creation.
+        if ( !energyDialog ) {
+          energyDialog = new ConversionInfoDialog();
+        }
+        energyDialog.show();
+      },
+      touchAreaXDilation: 10,
+      touchAreaYDilation: 5
+    } );
+
+    this.addChild( infoButton );
   }
 
   /**

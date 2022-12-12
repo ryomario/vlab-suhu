@@ -82,6 +82,8 @@ import kelvin_atas_png from '../../../images/Kalkulasi Suhu_kelvin_atas_png.js';
 import kelvin_bawah_png from '../../../images/Kalkulasi Suhu_kelvin_bawah_png.js';
 import kelvin_range_png from '../../../images/Kalkulasi Suhu_kelvin_range_png.js';
 import kelvin_skala_png from '../../../images/Kalkulasi Suhu_kelvin_skala_png.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
+import ScaleInfoDialog from './ScaleInfoDialog.js';
 
 // CONSTANTS
 const unknownLiquidString = LabSuhuStrings.unknownLiquid;
@@ -907,6 +909,30 @@ class ScaleScreenView extends ScreenView {
       // return the position as constrained by both the model and the view
       return viewConstrainedPosition;
     };
+
+
+
+    let energyDialog; // lazily created
+
+    const infoButton = new InfoButton( {
+      iconFill: 'rgb( 41, 106, 163 )',
+      maxHeight: resetAllButton.height,
+      left: EDGE_INSET,
+      centerY: resetAllButton.centerY,
+      listener: () => {
+        // Lazy creation.
+        if ( !energyDialog ) {
+          energyDialog = new ScaleInfoDialog();
+        }
+        energyDialog.show();
+      },
+      touchAreaXDilation: 10,
+      touchAreaYDilation: 5
+    } );
+
+    timeCounter.right = timeControlNode.left - 2 * EDGE_INSET;
+
+    this.addChild( infoButton );
   }
 
   /**

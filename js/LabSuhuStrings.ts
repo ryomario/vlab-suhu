@@ -53,6 +53,16 @@ type StringsType = {
     'kelvin': string;
     'kelvinStringProperty': LinkableProperty<string>;
   };
+  'info': {
+    'langkahTitle': string;
+    'langkahTitleStringProperty': LinkableProperty<string>;
+    'intro': string;
+    'introStringProperty': LinkableProperty<string>;
+    'scale': string;
+    'scaleStringProperty': LinkableProperty<string>;
+    'conversion': string;
+    'conversionStringProperty': LinkableProperty<string>;
+  }
 };
 
 const LabSuhuStrings = getStringModule( 'LAB_SUHU' ) as StringsType;
